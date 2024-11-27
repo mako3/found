@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <!-- include jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+
+        function uploadMessage(spaceId) {
+            const link = /*[[@{/uploadMessagesJson}]]*/'';
+            var file = document.getElementById(spaceId + '-message').files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('spaceId', spaceId);
+            $.ajax(
+                link,
+                {
+                    type: 'post',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: "html",
+                    success: function (data) {
+                        $('#' + spaceId + '-message-filename').val(data);
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("ERROR");
+                        alert(textStatus);
+                        alert(errorThrown);
+                    }
+                });
+
+            console.log(spaceId);
+        }
+
+        function uploadGroupInfo(spaceId) {
+            const link = /*[[@{/uploadGroupInfoJson}]]*/'';
+            var file = document.getElementById(spaceId + '-group').files[0];
+            var formData = new FormData();
+            formData.append('file', file);
+            formData.append('spaceId', spaceId);
+            $.ajax(
+                link,
+                {
+                    type: 'post',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: "html",
+                    success: function (data) {
+                        $('#' + spaceId + '-group-filename').val(data);
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("ERROR");
+                        alert(textStatus);
+                        alert(errorThrown);
+                    }
+                });
+
+            console.log(spaceId);
+        }
+
+        function importJson(id) {
+            const link = /*[[@{/importJson}]]*/'';
+            $.ajax(
+                link,
+                {
+                    type: 'get',
+                    data: { spaceId: id, filenameOfMessagesJson: $('#' + id + '-message-filename').val(), filenameOfGroupInfoJson: $('#' + id + '-group-filename').val() },
+                    dataType: "html",
+                    success: function (data) {
+                        alert(data.message);
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("ERROR");
+                    }
+                });
+        }
+
+    </script>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+
+        <h1>管理者向け画面</h1>
+
+        <h2>DB登録済みのスペース一覧</h2>
+        <table border="1">
+            <tr>
+                <th>name</th>
+                <th>displayName</th>
+                <th>accessState</th>
+                <th>memberCount</th>
+                <th>messageCount</th>
+                <th>lastImportedUser</th>
+                <th>lastImportedDate</th>
+                <th>messages.json</th>
+                <th>group_info.json</th>
+                <th>import</th>
+            </tr>
+            <tr th:each="space:${spaceList}">
+                <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">
+                        <span th:text="${space.spaceId}"></span></td>
+                </a>
+                <td><span th:text="${space.displayName}"></span></td>
+                <td><span th:text="${space.accessState}"></span></td>
+                <td><span th:text="${space.memberCount}"></span></td>
+                <td><span th:text="${space.messageCount}"></span></td>
+                <td><span th:text="${space.lastImportedUser}"></span></td>
+                <td><span th:text="${space.lastImportedDate}"></span></td>
+                <td><input type="file" th:id="${space.spaceId} + '-message'" class="json-uploader"
+                        accept="messages.json"></input>
+                    <input type="hidden" th:id="${space.spaceId} + '-message-filename'"></input>
+                    <button th:onclick="|uploadMessage('__${space.spaceId}__');|">アップロード</button>
+                </td>
+                <td><input type="file" th:id="${space.spaceId} + '-group'" class="json-uploader"
+                        accept="group-info.json"></input>
+                    <input type="hidden" th:id="${space.spaceId} + '-group-filename'"></input>
+                    <button th:onclick="|uploadGroupInfo('__${space.spaceId}__');|">アップロード</button>
+                </td>
+                <td>
+                    <button th:onclick="|importJson('__${space.spaceId}__');|">インポート</button>
+                </td>
+            </tr>
+        </table>
+
+        <h2>DB登録済みのユーザー一覧</h2>
+        <table border="1">
+            <tr>
+                <th>username</th>
+                <th>role</th>
+                <th>email_for_notification</th>
+                <th>email_for_message_identity</th>
+            </tr>
+            <tr th:each="user:${userList}">
+                <td><span th:text="${user.username}"></span></td>
+                <td><span th:text="${user.role}"></span></td>
+                <td><span th:text="${user.emailForNotification}"></span></td>
+                <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+            </tr>
+        </table>
+
+    </div>
+</body>
+
+</html>

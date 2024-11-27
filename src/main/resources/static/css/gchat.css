@@ -1,0 +1,85 @@
+body {
+    max-width: 80%;
+}
+
+
+.ant-table-row-expand-icon:focus,
+.ant-table-row-expand-icon:hover,
+.ant-table-row-expand-icon:active {
+    border-color: currentColor;
+}
+
+.ant-table-row-expand-icon:focus,
+.ant-table-row-expand-icon:hover {
+    color: #40a9ff;
+}
+
+.ant-table-row-collapsed::after {
+    content: '+';
+}
+
+.ant-table-row-expand-icon {
+    color: #1890ff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s;
+    display: inline-block;
+    width: 17px;
+    height: 17px;
+    color: inherit;
+    line-height: 13px;
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 2px;
+    outline: none;
+    transition: all 0.3s;
+    user-select: none;
+}
+
+.search-area>div>* {
+    display: inline-block;
+}
+
+.search-area .radio {
+    display: block;
+}
+
+b {
+    background-color: yellow;
+}
+
+.json-uploader {
+    background-color: transparent;
+}
+
+header {
+    background-color: #f0f2f5;
+    padding: 5px 20px;
+    margin-top: -20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+header>div:last-of-type {
+    margin-left: auto;
+}
+
+header .nv-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header span {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+header input {
+    margin: 0px 0px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}

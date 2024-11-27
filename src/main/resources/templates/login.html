@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>found</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link th:href="@{/css/gchat.css}" rel="stylesheet" />
+</head>
+
+<body>
+    <div th:if="${failureMessage != null}" th:text="${failureMessage}"></div>
+    <form th:action="@{/login}" method="post">
+
+        <div>
+            <span style="padding:10px;width:200px">ID</span>
+            <input type="text" name="username" autocomplete="on"
+                th:value="${param.username != null } ? ${param.username[0]} : ''" />
+        </div>
+
+        <div>
+            <span style="padding:10px;width:200px">PASSWORD</span>
+            <input type="password" name="password" autocomplete="on" th:value="${password}" />
+        </div>
+
+        <input type="submit" value="ログイン" />
+    </form>
+
+</body>
+
+</html>

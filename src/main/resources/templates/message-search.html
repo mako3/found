@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <script type="text/javascript" th:inline="javascript">
+        function search() {
+            const link = /*[[@{/messages}]]*/'';
+            var keyword = document.getElementById("keyword").value;
+            var queryType = document.getElementById("query-type").value;
+            if (queryType == "url") {
+                location.href = link + "?url=" + keyword;
+            } else {
+                location.href = link + "?messageText=" + keyword;
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h1>メッセージを探す</h1>
+        <h2>検索条件</h2>
+        <div class="search-area">
+            <div>
+                <select id="query-type" style="width:194px">
+                    <block th:if="${queryType} eq 'url'">
+                        <option value="messageText">メッセージ本文</option>
+                        <option value="url" selected>URL</option>
+                    </block>
+                    <block th:if="${queryType} eq 'messageText'">
+                        <option value="messageText" selected>メッセージ本文</option>
+                        <option value="url">URL</option>
+                    </block>
+                </select>
+                <input type="text" id="keyword" size="80" th:value="${keyword}"></input>
+            </div>
+            <div>
+                <span style="padding:10px;width:200px">メッセージ投稿日</span>
+                <input type="date" id="start-date" value="2000-01-01"></input>
+                <input type="date" id="end-date" value="2382-12-31"></input>
+            </div>
+            <div>
+                <span style="padding:10px;width:200px">メッセージ投稿者</span>
+                <input type="text" size="30"></input>
+            </div>
+            <div style="display:flex;">
+                <span style="padding:10px;width:200px">スペース範囲</span>
+                <div>
+                    <label class="radio">
+                        <input type="radio" name="q1" value="y" checked />自身が参加していたスペース全体(PRIVATEおよびDISCOVERABLE)
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="q1" value="n" />DISCOVERABLEなスペース全体
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="q1" value="n" />特定スペース<input type="text" size="30">
+                    </label>
+                </div>
+
+            </div>
+            <input type="button" value="検索" onclick="search();">
+        </div>
+
+        <h2>検索結果</h2>
+        <table border="1">
+            <tr>
+                <th width="120px">spaceId</th>
+                <th width="120px">messageId</th>
+                <th width="120px">topicId</th>
+                <th width="120px">creatorName</th>
+                <th width="120px">creatorEmail</th>
+                <th width="120px">createdDate</th>
+                <th>messageText</th>
+            </tr>
+            <tr th:each="message:${messageList}">
+                <td><a th:href="@{/{spaceId}/messages(spaceId=${message.spaceId})}"><span
+                            th:text="${message.spaceId}"></span></a></td>
+                <td><span th:text="${message.messageId}"></span></td>
+                <td><span th:text="${message.topicId}"></span></td>
+                <td><span th:text="${message.creatorName}"></span></td>
+                <td><span th:text="${message.creatorEmail}"></span></td>
+                <td><span th:text="${message.createdDate}"></span></td>
+                <td><span th:utext="${message.messageText}"></span></td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

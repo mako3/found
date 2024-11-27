@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h2>メニュー</h2>
+        <ul>
+            <li><a th:href="@{/spaces}">スペースを探す</a></li>
+            <li><a th:href="@{/messages}">メッセージを探す</a></li>
+            <li><a th:href="@{/admin}">管理画面へ</a></li>
+        </ul>
+        <h2>あなたの登録情報</h2>
+        <table border="1">
+            <tr>
+                <th>username</th>
+                <th>role</th>
+                <th>email_for_notification</th>
+                <th>email_for_message_identity</th>
+            </tr>
+            <tr th:each="user:${userList}">
+                <td><span th:text="${user.username}"></span></td>
+                <td><span th:text="${user.role}"></span></td>
+                <td><span th:text="${user.emailForNotification}"></span></td>
+                <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+            </tr>
+        </table>
+
+        <h2>あなたが参加していたスペース</h2>
+        <table border="1">
+            <tr>
+                <th>name</th>
+                <th>displayName</th>
+                <th>accessState</th>
+                <th>memberCount</th>
+                <th>messageCount</th>
+                <th>lastImportedUser</th>
+                <th>lastImportedDate</th>
+            </tr>
+            <tr th:each="space:${spaceList}">
+                <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">
+                        <span th:text="${space.spaceId}"></span></td>
+                </a>
+                <td><span th:text="${space.displayName}"></span></td>
+                <td><span th:text="${space.accessState}"></span></td>
+                <td><span th:text="${space.memberCount}"></span></td>
+                <td><span th:text="${space.messageCount}"></span></td>
+                <td><span th:text="${space.lastImportedUser}"></span></td>
+                <td><span th:text="${space.lastImportedDate}"></span></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+
+</html>

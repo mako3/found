@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <script type="text/javascript" th:inline="javascript">
+        function search() {
+            const link = /*[[@{/spaces}]]*/'';
+            var spaceName = document.getElementById("keyword").value;
+            location.href = link + "?displayName=" + spaceName;
+        }
+    </script>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h1>スペースを探す</h1>
+
+        <h2>検索条件</h2>
+        <div class="search-area">
+            <div>
+                <span style="padding:10px;width:200px">スペース名</span>
+                <input type="text" id="keyword" size="80" th:value="${keyword}"></input>
+            </div>
+            <div style="display:flex;">
+                <span style="padding:10px;width:200px">スペース範囲</span>
+                <div>
+                    <label class="radio">
+                        <input type="radio" name="q1" value="y" checked />自身が参加していたスペース全体(PRIVATEおよびDISCOVERABLE)
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="q1" value="n" />DISCOVERABLEなスペース全体
+                    </label>
+                </div>
+            </div>
+            <input type="button" value="検索" onclick="search();">
+        </div>
+
+        <h2>検索結果</h2>
+        <table border="1">
+            <tr>
+                <th>name</th>
+                <th>displayName</th>
+                <th>accessState</th>
+                <th>memberCount</th>
+                <th>messageCount</th>
+                <th>lastImportedUser</th>
+                <th>lastImportedDate</th>
+            </tr>
+            <tr th:each="space:${spaceList}">
+                <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">
+                        <span th:text="${space.spaceId}"></span></td>
+                </a>
+                <td><span th:text="${space.displayName}"></span></td>
+                <td><span th:text="${space.accessState}"></span></td>
+                <td><span th:text="${space.memberCount}"></span></td>
+                <td><span th:text="${space.messageCount}"></span></td>
+                <td><span th:text="${space.lastImportedUser}"></span></td>
+                <td><span th:text="${space.lastImportedDate}"></span></td>
+            </tr>
+        </table>
+
+    </div>
+</body>
+
+</html>

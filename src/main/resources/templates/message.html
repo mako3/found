@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h1 th:text="メッセージ一覧"></h1>
+        <h2>スペース情報</h2>
+        <table border="1">
+            <tr>
+                <th>name</th>
+                <th>displayName</th>
+                <th>accessState</th>
+                <th>memberCount</th>
+                <th>messageCount</th>
+                <th>lastImportedUser</th>
+                <th>lastImportedDate</th>
+            </tr>
+            <tr>
+                <td><span th:text="${space.spaceId}"></span></td>
+                <td><span th:text="${space.displayName}"></span></td>
+                <td><span th:text="${space.accessState}"></span></td>
+                <td><span th:text="${space.memberCount}"></span></td>
+                <td><span th:text="${space.messageCount}"></span></td>
+                <td><span th:text="${space.lastImportedUser}"></span></td>
+                <td><span th:text="${space.lastImportedDate}"></span></td>
+            </tr>
+        </table>
+        <h2>参加メンバー</h2>
+        <span th:text="${space.memberIds}"></span>
+        <h2>メッセージ一覧</h2>
+        <table border="1">
+            <tr>
+                <th width="30px"></th>
+                <th width="120px">messageId</th>
+                <th width="120px">topicId</th>
+                <th width="120px">creatorName</th>
+                <th width="120px">creatorEmail</th>
+                <th width="120px">createdDate</th>
+                <th>messageText</th>
+            </tr>
+            <tr th:each="message:${messageList}">
+                <td>
+                    <th:block th:if="${!message.threadReply and message.hasReply}">
+                        <div class="ant-table-row-expand-icon ant-table-row-collapsed"></div>
+                    </th:block>
+                    <th:block th:if="${message.threadReply}">
+                        L
+                    </th:block>
+                </td>
+                <td><span th:text="${message.messageId}"></span></td>
+                <td><span th:text="${message.topicId}"></span></td>
+                <td><span th:text="${message.creatorName}"></span></td>
+                <td><span th:text="${message.creatorEmail}"></span></td>
+                <td><span th:text="${message.createdDate}"></span></td>
+                <td><span th:text="${message.messageText}"></span></td>
+            </tr>
+        </table>
+
+    </div>
+</body>
+
+</html>
