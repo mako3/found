@@ -26,4 +26,8 @@ public class ChatSpace {
 
     private int messageCount;
 
+    public boolean getImported() {
+        return lastImportedUser != null && !lastImportedUser.isEmpty();
+    }
+
 }

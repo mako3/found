@@ -6,7 +6,7 @@
         function search() {
             const link = /*[[@{/spaces}]]*/'';
             var spaceName = document.getElementById("keyword").value;
-            location.href = link + "?displayName=" + spaceName;
+            location.href = link + "?displayName=" + encodeURIComponent(spaceName);
         }
     </script>
 </head>
@@ -36,7 +36,7 @@
             <input type="button" value="検索" onclick="search();">
         </div>
 
-        <h2>検索結果</h2>
+        <h2>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h2>
         <table border="1">
             <tr>
                 <th>name</th>
@@ -44,6 +44,7 @@
                 <th>accessState</th>
                 <th>memberCount</th>
                 <th>messageCount</th>
+                <th>imported</th>
                 <th>lastImportedUser</th>
                 <th>lastImportedDate</th>
             </tr>
@@ -55,6 +56,7 @@
                 <td><span th:text="${space.accessState}"></span></td>
                 <td><span th:text="${space.memberCount}"></span></td>
                 <td><span th:text="${space.messageCount}"></span></td>
+                <td><span th:text="${space.imported}"></span></td>
                 <td><span th:text="${space.lastImportedUser}"></span></td>
                 <td><span th:text="${space.lastImportedDate}"></span></td>
             </tr>

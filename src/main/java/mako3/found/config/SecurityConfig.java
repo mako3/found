@@ -14,33 +14,33 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
+        @Bean
+        PasswordEncoder passwordEncoder() {
+                return NoOpPasswordEncoder.getInstance();
+        }
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(
-                authorize -> authorize
-                        .requestMatchers("/css/**", "/login")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/login")
-                        .failureUrl("/login?failure")
-                        .defaultSuccessUrl("/")
-                        .permitAll())
-                .exceptionHandling(exception -> exception
-                        .accessDeniedPage("/display-access-denied"))
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login")
-                        .invalidateHttpSession(true)
-                        .deleteCookies("JSESSIONID"))
-                .csrf(configureator -> configureator.ignoringRequestMatchers("/*"));
+        @Bean
+        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+                http.authorizeHttpRequests(
+                                authorize -> authorize
+                                                .requestMatchers("/css/**", "/login", "/favicon.ico")
+                                                .permitAll()
+                                                .anyRequest()
+                                                .authenticated())
+                                .formLogin(formLogin -> formLogin
+                                                .loginPage("/login")
+                                                .failureUrl("/login?failure")
+                                                .defaultSuccessUrl("/")
+                                                .permitAll())
+                                .exceptionHandling(exception -> exception
+                                                .accessDeniedPage("/display-access-denied"))
+                                .logout(logout -> logout
+                                                .logoutUrl("/logout")
+                                                .logoutSuccessUrl("/login")
+                                                .invalidateHttpSession(true)
+                                                .deleteCookies("JSESSIONID"))
+                                .csrf(configureator -> configureator.ignoringRequestMatchers("/*"));
 
-        return http.build();
-    }
+                return http.build();
+        }
 }

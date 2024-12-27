@@ -83,3 +83,22 @@ header input {
     padding-top: 3px;
     padding-bottom: 3px;
 }
+
+.header-pagenator {
+    display: flex;
+}
+
+.header-pagenator>div {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.header-pagenator input {
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fff;
+}

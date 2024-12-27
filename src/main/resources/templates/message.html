@@ -7,7 +7,7 @@
 <body>
     <div layout:fragment="contents">
 
-        <h1 th:text="メッセージ一覧"></h1>
+        <h1 th:text="${space.displayName}"></h1>
         <h2>スペース情報</h2>
         <table border="1">
             <tr>
@@ -16,6 +16,7 @@
                 <th>accessState</th>
                 <th>memberCount</th>
                 <th>messageCount</th>
+                <th>imported</th>
                 <th>lastImportedUser</th>
                 <th>lastImportedDate</th>
             </tr>
@@ -25,13 +26,23 @@
                 <td><span th:text="${space.accessState}"></span></td>
                 <td><span th:text="${space.memberCount}"></span></td>
                 <td><span th:text="${space.messageCount}"></span></td>
+                <td><span th:text="${space.imported}"></span></td>
                 <td><span th:text="${space.lastImportedUser}"></span></td>
                 <td><span th:text="${space.lastImportedDate}"></span></td>
             </tr>
         </table>
         <h2>参加メンバー</h2>
         <span th:text="${space.memberIds}"></span>
-        <h2>メッセージ一覧</h2>
+
+        <div class="header-pagenator">
+            <h2>メッセージ一覧</h2>
+            <div>
+                <input type="button" value="prev" th:disabled="${dateBefore == null}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateBefore=__${dateBefore}__}'|" />
+                <input type="button" value="next" th:disabled="${dateFrom == null}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateFrom=__${dateFrom}__}'|" />
+            </div>
+        </div>
         <table border="1">
             <tr>
                 <th width="30px"></th>
@@ -59,6 +70,14 @@
                 <td><span th:text="${message.messageText}"></span></td>
             </tr>
         </table>
+        <div class="header-pagenator">
+            <div>
+                <input type="button" value="prev" th:disabled="${dateBefore == null}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateBefore=__${dateBefore}__}'|" />
+                <input type="button" value="next" th:disabled="${dateFrom == null}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateFrom=__${dateFrom}__}'|" />
+            </div>
+        </div>
 
     </div>
 </body>

@@ -1,5 +1,7 @@
 package mako3.found.dao;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +17,31 @@ public class MessageDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<ChatMessage> find(String messageText) {
+    public List<ChatMessage> findByTerms(List<String> sanitizedTermList, int limit) {
+        String messageText = String.join(" AND ", sanitizedTermList);
         return jdbcTemplate.query(
-                "select space_id,creator_name,created_date,creator_email,creator_user_type,paradedb.snippet(message_text) as message_text,topic_id,message_id,thread_reply,has_reply from gchat_messages1 where message_text @@@ ?",
-                new DataClassRowMapper<>(ChatMessage.class), messageText);
+                "select space_id,creator_name,created_date,creator_email,creator_user_type,paradedb.snippet(message_text) as message_text,topic_id,message_id,thread_reply,has_reply from gchat_messages1 where message_text @@@ ? limit ?",
+                new DataClassRowMapper<>(ChatMessage.class), messageText, limit);
     }
 
     public List<ChatMessage> list(String spaceId, int limit) {
         return jdbcTemplate.query(
                 "select * from gchat_messages1 where space_id = ? order by topic_created_date asc, created_date asc limit ?",
                 new DataClassRowMapper<>(ChatMessage.class), spaceId, limit);
+    }
+
+    public List<ChatMessage> listFrom(String spaceId, LocalDateTime dateFrom, int limit) {
+        return jdbcTemplate.query(
+                "select * from gchat_messages1 where space_id = ? and created_date >= ? order by topic_created_date asc, created_date asc limit ?",
+                new DataClassRowMapper<>(ChatMessage.class), spaceId, dateFrom, limit);
+    }
+
+    public List<ChatMessage> listBefore(String spaceId, LocalDateTime dateBefore, int limit) {
+        List<ChatMessage> list = jdbcTemplate.query(
+                "select * from gchat_messages1 where space_id = ? and created_date < ? order by topic_created_date desc, created_date desc limit ?",
+                new DataClassRowMapper<>(ChatMessage.class), spaceId, dateBefore, limit);
+        Collections.reverse(list);
+        return list;
     }
 
     public List<ChatMessage> findByUrl(String messageUrl) {

@@ -8,9 +8,9 @@
             var keyword = document.getElementById("keyword").value;
             var queryType = document.getElementById("query-type").value;
             if (queryType == "url") {
-                location.href = link + "?url=" + keyword;
+                location.href = link + "?url=" + encodeURIComponent(keyword);
             } else {
-                location.href = link + "?messageText=" + keyword;
+                location.href = link + "?messageText=" + encodeURIComponent(keyword);
             }
         }
     </script>
@@ -62,7 +62,7 @@
             <input type="button" value="検索" onclick="search();">
         </div>
 
-        <h2>検索結果</h2>
+        <h2>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h2>
         <table border="1">
             <tr>
                 <th width="120px">spaceId</th>
@@ -76,7 +76,9 @@
             <tr th:each="message:${messageList}">
                 <td><a th:href="@{/{spaceId}/messages(spaceId=${message.spaceId})}"><span
                             th:text="${message.spaceId}"></span></a></td>
-                <td><span th:text="${message.messageId}"></span></td>
+                <td><a
+                        th:href="@{/{spaceId}/messages?dateFrom={createdDate}(spaceId=${message.spaceId},createdDate=${message.urlSafeCreatedDate})}"><span
+                            th:text="${message.messageId}"></span></a></td>
                 <td><span th:text="${message.topicId}"></span></td>
                 <td><span th:text="${message.creatorName}"></span></td>
                 <td><span th:text="${message.creatorEmail}"></span></td>

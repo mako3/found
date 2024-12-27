@@ -23,7 +23,7 @@ public class FoundApplication {
 	CommandLineRunner init(FileSystemStorageService storageService) {
 		return (args) -> {
 			storageService.init();
-		};
+		}
 	}
 
 	@Bean
