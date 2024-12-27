@@ -1,0 +1,13 @@
+INSERT INTO found_users (username, password, role) VALUES ('root', '{noop}admin', 'ADMIN') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.subject1', '[found] ログイン情報のお知らせ') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.body1', E'過去チャット検索システム(found)のログイン情報をお知らせします。\nユーザー名 [[${username}]]\nパスワード [[${password}]]') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.subject2', '[found] パスワード再発行の手続き') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.body2', E'下記URLからパスワードを再発行してください。\n/password/reset/open-link?token=[[${token}]]\nトークンの有効期限は24時間です。') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.username', '') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.password', '') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.from', '') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.port', '25') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.host', '') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('notice', '') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('fulltext.index', 'true') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('monitoring.snippet', '') ON CONFLICT DO NOTHING;

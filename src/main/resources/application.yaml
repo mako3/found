@@ -1,0 +1,46 @@
+spring:
+    application:
+        name: found
+    datasource:
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}
+        username: ${POSTGRES_USER:postgres}
+        password: ${POSTGRES_PASSWORD:admin}
+    servlet:
+        multipart:
+            max-file-size: 200MB
+            max-request-size: 200MB
+    mail:
+        port: # value on found_keyvalue table is used
+        host: # value on found_keyvalue table is used
+        default-encoding: UTF-8
+        protocol: smtp
+        username: # value on found_keyvalue table is used
+        password: # value on found_keyvalue table is used
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    starttls:
+                        enable: true
+    sql:
+        init:
+            platform: postgres
+            mode: always
+            schema-locations: classpath:/schema.sql
+            data-locations: classpath:/data.sql
+            encoding: UTF-8
+    session:
+        timeout: ${SESSION_TIMEOUT:86400}
+server:
+    servlet:
+        context-path: ${CONTEXT_PATH:/found}
+        session:
+            timeout:  ${SESSION_TIMEOUT:86400}
+    port: 8080
+
+logging:
+    level:
+        org:
+            springframework: INFO
+        mako3:
+            found: INFO

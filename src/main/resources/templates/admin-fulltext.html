@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h2>全文検索インデックス設定</h2>
+        <div th:if="${successMessage != null}" th:text="${successMessage}" class="success" style="width:80%;"></div>
+        <div th:if="${failureMessage != null}" th:text="${failureMessage}" class="alert" style="width:80%;"></div>
+        <p>無効状態から有効化する際、全文検索インデックスの再構築が行われます。この時、メッセージ件数によっては長時間の実行時間がかかる場合があります。</p>
+        <form th:action="@{/admin/updateFulltextSettings}" method="post">
+            <label for="fulltext-enabled">有効</label>
+            <input type="radio" name="fulltext-enabled" id="fulltext-enabled" value="enabled"
+                th:checked="${fulltextEnabled eq 'enabled'}">
+
+            <label for="fulltext-disabled">無効</label>
+            <input type="radio" name="fulltext-enabled" id="fulltext-disabled" value="disabled"
+                th:checked="${fulltextEnabled eq 'disabled'}">
+            <input type="submit" value="更新" style="margin-top:40px;" />
+        </form>
+    </div>
+</body>
+
+</html>

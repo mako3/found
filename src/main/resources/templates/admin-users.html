@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <!-- include jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+
+        function resetPassword(username) {
+            const link = /*[[@{/admin/resetPassword}]]*/'';
+            var formData = new FormData();
+            formData.append('username', username);
+            $.ajax(link, {
+                processData: false,
+                contentType: false,
+                data: formData,
+                dataType: "html",
+                async: false
+            }).done(function (e) {
+                $('#li_' + username).addClass('sent');
+            }).fail(function (e) {
+                $('#li_' + username).addClass('sent-failure');
+            });
+        }
+
+        function resetPasswords() {
+            var message = document.getElementById('reset-dialog-message');
+            var resetButton = document.getElementById('reset-submit-trigger');
+            var cancelButton = document.getElementById('reset-cancel-trigger');
+
+            resetButton.disabled = true;
+            cancelButton.disabled = true;
+            message.classList.add('warn');
+            message.textContent = "パスワードのリセットを実行中です。";
+
+            $('input[name="user-selector"]:checked').toArray()
+                .forEach(function (e) {
+                    resetPassword(e.value);
+                });
+
+            message.classList.remove('warn');
+            message.classList.add('success');
+            message.textContent = "パスワードのリセットが完了しました。";
+
+            resetButton.disabled = false;
+            cancelButton.disabled = false;
+            cancelButton.textContent = "閉じる";;
+
+
+        }
+
+        function showUserAddForm() {
+            $('#add-user-form').find(':text').val("");
+            $('#add-submit-trigger').disabled = false;
+            var dialog = document.getElementById('add-user-dialog');
+            dialog.showModal();
+
+        }
+
+        function addUser() {
+            const link = /*[[@{/admin/addUser}]]*/'';
+            $('#add-submit-trigger').disabled = true;
+            let formData = $('#add-user-form');
+            $.ajax(link, {
+                type: "post",
+                processData: true,
+                data: formData.serialize(),
+                dataType: "html"
+            }).done(function (e) {
+                location.href = /*[[@{/admin/users}]]*/'';
+            }).fail(function (e) {
+                alert(e.responseText);
+            });
+        }
+
+        function showUserDeleteForm() {
+            if ($('input[name="user-selector"]:checked').length == 0) {
+                alert('ユーザーを選択してください。');
+                return;
+            }
+            var dialog = document.getElementById('delete-user-dialog');
+            dialog.showModal();
+        }
+
+        function deleteUser() {
+            const link = /*[[@{/admin/deleteUser}]]*/'';
+            $('#delete-submit-trigger').disabled = true;
+            $.ajax(link, {
+                type: "delete",
+                processData: true,
+                data: { usernames: $('input[name="user-selector"]:checked').val() },
+                dataType: "html"
+            }).done(function (e) {
+                location.href = /*[[@{/admin/users}]]*/'';
+            }).fail(function (e) {
+                alert(e.responseText);
+            });
+        }
+
+        function showPasswordResetForm() {
+            var checkedInputs = $('input[name="user-selector"]:checked');
+            if (checkedInputs.length == 0) {
+                alert('ユーザーを選択してください。');
+                return;
+            }
+            var message = document.getElementById('reset-dialog-message');
+            var resetButton = document.getElementById('reset-submit-trigger');
+            var cancelButton = document.getElementById('reset-cancel-trigger');
+            var resetList = $('#reset-password-list');
+            resetButton.textContent = "実行";
+            resetButton.disabled = false;
+            cancelButton.textContent = "キャンセル";
+            cancelButton.disabled = false;
+            message.textContent = "下記のユーザーに対して、パスワードのランダム設定およびメール送付を行います。";
+            message.classList.remove(...message.classList);
+            message.classList.add('alert');
+
+            resetList.empty();
+            checkedInputs.toArray()
+                .forEach(function (e) {
+                    var li = $("<li></li>", {
+                        id: "li_" + e.value,
+                        text: e.value
+                    });
+                    resetList.append(li);
+                });
+
+            var dialog = document.getElementById('reset-password-dialog');
+            dialog.showModal();
+        };
+
+        // for csrf 
+        $(function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+        <div class="header-pagenator">
+            <h2>DB登録済みのユーザー一覧 (<span th:text="${userCount}"></span>)</h2>
+            <div>
+                <input type="button" onclick="showPasswordResetForm();" value="パスワードリセット" />
+                <input type="button" onclick="showUserAddForm();" value="ユーザー追加" />
+                <input type="button" onclick="showUserDeleteForm();" value="ユーザー削除" />
+            </div>
+        </div>
+        <table border="1">
+            <tr>
+                <th width="25px"></th>
+                <th>username</th>
+                <th>role</th>
+                <th>email for notification</th>
+                <th>email for message identity</th>
+                <th>last login</th>
+                <th>last password update</th>
+            </tr>
+            <tr th:each="user:${userList}">
+                <td><input type="checkbox" name="user-selector" th:value="${user.username}" /></td>
+                <td><span th:text="${user.username}"></span></td>
+                <td><span th:text="${user.role}"></span></td>
+                <td><span th:text="${user.emailForNotification}"></span></td>
+                <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+                <td><span th:text="${#temporals.format(user.lastLogin, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+                <td><span th:text="${#temporals.format(user.lastPasswordUpdate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
+            </tr>
+        </table>
+
+        <dialog id="add-user-dialog" style="width:640px; height:480px;">
+            <header>ユーザーの追加</header>
+            <form method="post" id="add-user-form">
+                <label for="form-username">username</label>
+                <input type="text" id="form-username" name="username" style="width:400px;" />
+
+                <div>
+                    <label for="role-selector">role</label>
+                    <div id="role-selector">
+                        <input type="radio" name="role" value="NORMAL" />PRIVATE
+                        <input type="radio" name="role" value="ADMIN" />ADMIN
+                    </div>
+                </div>
+
+                <label for="form-emailForNotification">email for notification</label>
+                <input type="text" id="form-emailForNotification" name="emailForNotification" style="width:400px;" />
+
+                <label for="form-emailForMessageIdentity">email for message identity</label>
+                <input type="text" id="form-emailForMessageIdentity" name="emailForMessageIdentity"
+                    style="width:400px;" />
+            </form>
+            <div style="position:absolute; bottom:20px; right:20px;">
+                <button id="add-submit-trigger" onclick="addUser();">登録</button>
+                <button id="add-cancel-trigger"
+                    onclick="document.getElementById('add-user-dialog').close()">キャンセル</button>
+            </div>
+        </dialog>
+
+        <dialog id="delete-user-dialog" style="width:640px; height:480px;">
+            <header>ユーザーの削除</header>
+            <p class="alert">この操作は取り消せません。本当に実行しますか？</p>
+            <div style="position:absolute; bottom:20px; right:20px;">
+                <button id="delete-submit-trigger" onclick="deleteUser();">実行</button>
+                <button id="delete-cancel-trigger"
+                    onclick="document.getElementById('delete-user-dialog').close()">キャンセル</button>
+            </div>
+        </dialog>
+
+        <dialog id="reset-password-dialog" style="width:640px; height:480px;">
+            <header>パスワードリセット</header>
+            <p id="reset-dialog-message"></p>
+            <section style="width:60%; height:60%; overflow:auto;">
+                <ul id="reset-password-list">
+                </ul>
+            </section>
+
+            <div style="position:absolute; bottom:20px; right:20px;">
+                <button id="reset-submit-trigger" onclick="resetPasswords();">実行</button>
+                <button id="reset-cancel-trigger"
+                    onclick="document.getElementById('reset-password-dialog').close()">キャンセル</button>
+            </div>
+
+    </div>
+</body>
+
+</html>

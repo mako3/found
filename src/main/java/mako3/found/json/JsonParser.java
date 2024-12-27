@@ -30,8 +30,10 @@ public class JsonParser {
             }
 
             return list;
+        } catch (JsonException e) {
+            throw e;
         } catch (Exception e) {
-            throw new RuntimeException("messages.jsonのパース時にエラーが発生しました", e);
+            throw new JsonException("messages.jsonのパース時にエラーが発生しました", e);
         }
     }
 
@@ -51,6 +53,8 @@ public class JsonParser {
                 list.add(groupMember);
             }
             return list;
+        } catch (JsonException e) {
+            throw e;
         } catch (Exception e) {
             throw new JsonException("group_info.jsonのパース時にエラーが発生しました", e);
         }

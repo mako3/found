@@ -7,11 +7,21 @@
             const link = /*[[@{/messages}]]*/'';
             var keyword = document.getElementById("keyword").value;
             var queryType = document.getElementById("query-type").value;
-            if (queryType == "url") {
-                location.href = link + "?url=" + keyword;
-            } else {
-                location.href = link + "?messageText=" + keyword;
-            }
+            var creatorEmail = document.getElementById("creatorEmail").value;
+            var queryScope = document.querySelector("input[name='q1']:checked").value;
+            var spaceId = document.getElementById("spaceId").value;
+            var startDate = document.getElementById("start-date").value;
+            var endDate = document.getElementById("end-date").value;
+
+            location.href = link + "?"
+                + "queryType=" + queryType + "&"
+                + "queryScope=" + queryScope + "&"
+                + "creatorEmail=" + creatorEmail + "&"
+                + "spaceId=" + spaceId + "&"
+                + "startDate=" + startDate + "&"
+                + "endDate=" + endDate + "&"
+                + "keyword=" + encodeURIComponent(keyword);
+
         }
     </script>
 </head>
@@ -19,42 +29,43 @@
 <body>
     <div layout:fragment="contents">
 
-        <h1>メッセージを探す</h1>
-        <h2>検索条件</h2>
+        <div width="100%" class="alert" style="margin-top:10px;" th:if="${fulltextEnabled eq 'disabled'}">
+            全文検索インデックスは一時的に無効化されています。メッセージ検索機能は現在ご利用いただけません。
+        </div>
+
+        <h2>メッセージを探す</h2>
+        <h3>検索条件</h3>
         <div class="search-area">
             <div>
-                <select id="query-type" style="width:194px">
-                    <block th:if="${queryType} eq 'url'">
-                        <option value="messageText">メッセージ本文</option>
-                        <option value="url" selected>URL</option>
-                    </block>
-                    <block th:if="${queryType} eq 'messageText'">
-                        <option value="messageText" selected>メッセージ本文</option>
-                        <option value="url">URL</option>
-                    </block>
+                <select id="query-type" style="width:214px">
+                    <option value="messageText" th:selected="${queryType} eq 'messageText'">メッセージ本文</option>
+                    <option value="url" th:selected="${queryType} eq 'url'">URL</option>
                 </select>
                 <input type="text" id="keyword" size="80" th:value="${keyword}"></input>
             </div>
             <div>
                 <span style="padding:10px;width:200px">メッセージ投稿日</span>
-                <input type="date" id="start-date" value="2000-01-01"></input>
-                <input type="date" id="end-date" value="2382-12-31"></input>
+                <input type="date" id="start-date" th:value="${startDate}"></input>
+                <input type="date" id="end-date" th:value="${endDate}"></input>
             </div>
             <div>
-                <span style="padding:10px;width:200px">メッセージ投稿者</span>
-                <input type="text" size="30"></input>
+                <span style="padding:10px;width:200px">メッセージ投稿者 (email)</span>
+                <input type="text" id="creatorEmail" th:value="${creatorEmail}" size="30"></input>
             </div>
             <div style="display:flex;">
-                <span style="padding:10px;width:200px">スペース範囲</span>
+                <span style="padding:10px;width:200px">検索スコープ</span>
                 <div>
                     <label class="radio">
-                        <input type="radio" name="q1" value="y" checked />自身が参加していたスペース全体(PRIVATEおよびDISCOVERABLE)
+                        <input type="radio" name="q1" value="PRIVATE_DISCOVERABLE"
+                            th:checked="${queryScope == null || queryScope eq 'PRIVATE_DISCOVERABLE'}" />自身が参加していたスペース全体
                     </label>
                     <label class="radio">
-                        <input type="radio" name="q1" value="n" />DISCOVERABLEなスペース全体
+                        <input type="radio" name="q1" value="DISCOVERABLE"
+                            th:checked="${queryScope} eq 'DISCOVERABLE'" />DISCOVERABLEなスペース全体(参加していないスペースを含む)
                     </label>
                     <label class="radio">
-                        <input type="radio" name="q1" value="n" />特定スペース<input type="text" size="30">
+                        <input type="radio" name="q1" value="SPACE" th:checked="${queryScope} eq 'SPACE'" />特定スペース
+                        (space id)<input type="text" id="spaceId" th:value="${spaceId}" size="30">
                     </label>
                 </div>
 
@@ -62,25 +73,28 @@
             <input type="button" value="検索" onclick="search();">
         </div>
 
-        <h2>検索結果</h2>
+        <h3>検索結果 <span th:if="${resultCount != null}" th:text="|${resultCount}件|"></span> <span
+                th:if="${queryTime != null}" th:text="|(${queryTime}ミリ秒)|"></span></h3>
         <table border="1">
             <tr>
-                <th width="120px">spaceId</th>
-                <th width="120px">messageId</th>
-                <th width="120px">topicId</th>
-                <th width="120px">creatorName</th>
-                <th width="120px">creatorEmail</th>
-                <th width="120px">createdDate</th>
-                <th>messageText</th>
+                <th width="120px">space id</th>
+                <th width="120px">space name</th>
+                <th width="120px">message id</th>
+                <th width="120px">creator name</th>
+                <th width="120px">creator email</th>
+                <th width="120px">created date</th>
+                <th>message text</th>
             </tr>
             <tr th:each="message:${messageList}">
                 <td><a th:href="@{/{spaceId}/messages(spaceId=${message.spaceId})}"><span
                             th:text="${message.spaceId}"></span></a></td>
-                <td><span th:text="${message.messageId}"></span></td>
-                <td><span th:text="${message.topicId}"></span></td>
+                <td><span th:text="${message.spaceName}"></span></td>
+                <td><a
+                        th:href="@{/{spaceId}/messages?dateFrom={createdDate}(spaceId=${message.spaceId},createdDate=${message.urlSafeCreatedDate})}"><span
+                            th:text="${message.messageId}"></span></a></td>
                 <td><span th:text="${message.creatorName}"></span></td>
                 <td><span th:text="${message.creatorEmail}"></span></td>
-                <td><span th:text="${message.createdDate}"></span></td>
+                <td><span th:text="${#temporals.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td><span th:utext="${message.messageText}"></span></td>
             </tr>
         </table>

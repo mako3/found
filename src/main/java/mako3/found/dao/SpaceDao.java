@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -16,44 +18,71 @@ import mako3.found.entity.ChatSpace;
 
 @Component
 public class SpaceDao {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<ChatSpace> findByName(String displayName) {
-        return jdbcTemplate.query("select * from gchat_spaces1 where display_name like ?",
-                new JdbcRowMapper(), "%" + displayName + "%");
+    @Autowired
+    private NamedParameterJdbcTemplate namedJdbcTemplate;
+
+    public List<ChatSpace> findByName(List<String> accessibleSpaceIds, String displayName) {
+        String sql = "select * from found_spaces where display_name like :displayName ";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("displayName", "%" + displayName + "%");
+
+        // filter by accessible space ids
+        if (!accessibleSpaceIds.isEmpty()) {
+            sql += "AND space_id IN (:spaceIds) ";
+            parameters.addValue("spaceIds", accessibleSpaceIds);
+        } else {
+            // for irregular situation
+            sql += "AND space_id = '' ";
+        }
+
+        return namedJdbcTemplate.query(sql, parameters, new JdbcRowMapper());
     }
 
     public List<ChatSpace> findByMember(String memberId) {
-        return jdbcTemplate.query("select * from gchat_spaces1 where ? = any(member_ids);",
+        return jdbcTemplate.query("select * from found_spaces where ? = any(member_ids);",
                 new JdbcRowMapper(), memberId);
     }
 
     public List<ChatSpace> findAll() {
-        return jdbcTemplate.query("select * from gchat_spaces1",
+        return jdbcTemplate.query("select * from found_spaces",
                 new JdbcRowMapper());
     }
 
     public ChatSpace findOne(String spaceId) {
-        return jdbcTemplate.queryForObject("select * from gchat_spaces1 where space_id = ?",
+        return jdbcTemplate.queryForObject("select * from found_spaces where space_id = ?",
                 new JdbcRowMapper(), spaceId);
     }
 
     public void updateMemberIds(String spaceId, List<String> memberIds) {
         String[] array = memberIds.toArray(new String[0]);
-        jdbcTemplate.update("update gchat_spaces1 set member_ids = ?, member_count = ?  where space_id = ?",
+        jdbcTemplate.update("update found_spaces set member_ids = ?, member_count = ?  where space_id = ?",
                 array, memberIds.size(), spaceId);
     }
 
     public void updateLastImported(String spaceId, String executorName) {
         jdbcTemplate.update(
-                "update gchat_spaces1 set last_imported_date = current_timestamp, last_imported_user = ? where space_id = ?",
+                "update found_spaces set last_imported_date = current_timestamp, last_imported_user = ? where space_id = ?",
                 executorName, spaceId);
     }
 
     public void updateMessageCount(String spaceId, int messageCount) {
-        jdbcTemplate.update("update gchat_spaces1 set message_count = ? where space_id = ?",
+        jdbcTemplate.update("update found_spaces set message_count = ? where space_id = ?",
                 messageCount, spaceId);
+    }
+
+    public void insertSpace(String spaceId, String displayName, String accessState) {
+        jdbcTemplate.update(
+                "insert into found_spaces (space_id, display_name, access_state, member_ids) values (?, ?, ?, '{}')",
+                spaceId,
+                displayName, accessState);
+    }
+
+    public void deleteSpace(String spaceId) {
+        jdbcTemplate.update("delete from found_spaces where space_id = ?", spaceId);
     }
 
     public class JdbcRowMapper implements RowMapper<ChatSpace> {

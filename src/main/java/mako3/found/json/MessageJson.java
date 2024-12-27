@@ -1,6 +1,8 @@
 package mako3.found.json;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
@@ -29,9 +31,11 @@ public class MessageJson {
     private String creatorUserType;
 
     @JsonSetter("created_date")
-    public void setCreatedDate(String createdDate) {
+    public void setCreatedDate(String utcCreatedDate) {
         try {
-            this.createdDate = LocalDateTime.parse(createdDate, FORMATTER);
+            LocalDateTime utc = LocalDateTime.parse(utcCreatedDate, FORMATTER);
+            ZonedDateTime jst = ZonedDateTime.of(utc, ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Tokyo"));
+            this.createdDate = jst.toLocalDateTime();
         } catch (DateTimeParseException e) {
             e.printStackTrace();
             this.createdDate = null;

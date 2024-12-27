@@ -4,27 +4,35 @@
 <head>
     <title>found</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="icon" th:href="@{/favicon.ico}" />
     <link th:href="@{/css/gchat.css}" rel="stylesheet" />
 </head>
 
-<body>
-    <div th:if="${failureMessage != null}" th:text="${failureMessage}"></div>
-    <form th:action="@{/login}" method="post">
+<body style="min-height: 100vh; display:flex; justify-content:center; align-items:center;">
+    <form th:action="@{/login}" method="post" style="height:400px;">
 
-        <div>
-            <span style="padding:10px;width:200px">ID</span>
-            <input type="text" name="username" autocomplete="on"
-                th:value="${param.username != null } ? ${param.username[0]} : ''" />
+        <div style="width:500px;">
+            <h1>found</h1>
+            <div>
+                <span style="padding:10px;width:200px">ID</span>
+                <input type="text" name="username" autocomplete="on"
+                    th:value="${param.username != null } ? ${param.username[0]} : ''" style="width:300px;" />
+            </div>
+
+            <div>
+                <span style="padding:10px;width:200px">PASSWORD</span>
+                <input type="password" name="password" autocomplete="on" th:value="${password}" style="width:300px;" />
+            </div>
+
+            <div th:if="${failureMessage != null}" th:text="${failureMessage}" class="alert" style="width:300px;">
+            </div>
+
+            <div style="margin-top:40px; margin-bottom:120px; display:inline-flex; align-items:center;">
+                <input type="submit" value="ログイン" />
+                <span style="margin-left:40px;"><a th:href="@{/password/reset/request}">パスワードを忘れた方はこちら</a></span>
+            </div>
         </div>
-
-        <div>
-            <span style="padding:10px;width:200px">PASSWORD</span>
-            <input type="password" name="password" autocomplete="on" th:value="${password}" />
-        </div>
-
-        <input type="submit" value="ログイン" />
     </form>
 
 </body>

@@ -1,6 +1,7 @@
 package mako3.found.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,11 @@ import lombok.Data;
 @Builder
 public class ChatMessage {
 
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+
     private String spaceId;
+
+    private String spaceName;
 
     private String creatorName;
 
@@ -28,5 +33,9 @@ public class ChatMessage {
     private boolean threadReply;
 
     private boolean hasReply;
+
+    public String getUrlSafeCreatedDate() {
+        return createdDate.format(FORMATTER);
+    }
 
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h2>メール設定</h2>
+        <div th:if="${successMessage != null}" th:text="${successMessage}" class="success" style="width:80%;"></div>
+        <div th:if="${failureMessage != null}" th:text="${failureMessage}" class="alert" style="width:80%;"></div>
+        <form th:action="@{/admin/updateMailSettings}" method="post" th:object="${mail}">
+            <h3>SMTPサーバー設定</h3>
+            <div>
+                <label for="smtpHost">SMTP Host</label>
+                <input type="text" id="smtpHost" name="smtpHost" th:value="*{smtpHost}" style="width:600px;" />
+            </div>
+
+            <div>
+                <label for="smtpPort">SMTP Port</label>
+                <input type="number" id="smtpPort" name="smtpPort" th:value="*{smtpPort}" />
+            </div>
+
+            <div>
+                <label for="smtpUsername">SMTP Username</label>
+                <input type="text" id="smtpUsername" name="smtpUsername" th:value="*{smtpUsername}"
+                    style="width:400px;" />
+            </div>
+
+            <div>
+                <label for="smtpPassword">SMTP Password</label>
+                <input type="password" id="smtpPassword" name="smtpPassword" th:value="*{smtpPassword}"
+                    style="width:400px;" />
+            </div>
+
+            <div>
+                <label for="mailFrom">Mail From</label>
+                <input type="text" id="mailFrom" name="mailFrom" th:value="*{mailFrom}" style="width:500px;" />
+            </div>
+
+            <h3>パスワード通知メール</h3>
+            <div>
+                <label for="mailSubject1">Mail Subject</label>
+                <input type="text" id="mailSubject1" name="mailSubject1" th:value="*{mailSubject1}"
+                    style="width:700px;" />
+            </div>
+
+            <div>
+                <label for="mailBodyTemplate1">Mail Body</label>
+                <textarea id="mailBodyTemplate1" name="mailBodyTemplate1" th:text="*{mailBodyTemplate1}"></textarea>
+            </div>
+
+            <h3>リセットトークン通知メール</h3>
+            <div>
+                <label for="mailSubject2">Mail Subject</label>
+                <input type="text" id="mailSubject2" name="mailSubject2" th:value="*{mailSubject2}"
+                    style="width:700px;" />
+            </div>
+
+            <div>
+                <label for="mailBodyTemplate2">Mail Body</label>
+                <textarea id="mailBodyTemplate2" name="mailBodyTemplate2" th:text="*{mailBodyTemplate2}"></textarea>
+            </div>
+
+
+            <input type="submit" value="更新" />
+        </form>
+
+
+    </div>
+</body>
+
+</html>

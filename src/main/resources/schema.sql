@@ -1,4 +1,7 @@
-CREATE TABLE IF NOT EXISTS gchat_messages1(
+SET paradedb.create_index_memory_budget = 512;
+SET timezone TO 'Asia/Tokyo';
+
+CREATE TABLE IF NOT EXISTS found_messages(
   space_id varchar(12) NOT NULL,
   creator_name varchar(40),
   creator_email varchar(40),
@@ -13,18 +16,16 @@ CREATE TABLE IF NOT EXISTS gchat_messages1(
   PRIMARY KEY (message_id)
 );
 
-CALL paradedb.create_bm25(
-  index_name => 'gchat_messages1_index',
-  table_name => 'gchat_messages1',
-  key_field => 'message_id',
-  text_fields => paradedb.field(
-	name => 'message_text', 
-	tokenizer => paradedb.tokenizer('japanese_lindera')
-  ),
-  datetime_fields => paradedb.field('created_date')
+CREATE INDEX IF NOT EXISTS found_messages_index ON found_messages 
+USING bm25 (message_id, space_id, message_text, created_date, creator_email)
+WITH (
+  key_field='message_id',
+  text_fields='{
+    "message_text":{"tokenizer": {"type": "japanese_lindera"}}
+  }'
 );
 
-CREATE TABLE IF NOT EXISTS gchat_spaces1 (
+CREATE TABLE IF NOT EXISTS found_spaces (
   space_id varchar(20) NOT NULL,
   display_name varchar(50) NOT NULL,
   access_state varchar(12),
@@ -40,7 +41,30 @@ CREATE TABLE IF NOT EXISTS found_users (
     username varchar(100) not null,
     password varchar(500) not null,
     role varchar(10) not null,
+    last_login timestamp,
+    last_password_update timestamp,
     email_for_notification varchar(100),
     email_for_message_identity varchar(100),
+    force_change_password boolean,
     primary key (username)
-)
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS found_users_index ON found_users (
+  email_for_notification
+);
+
+
+CREATE TABLE IF NOT EXISTS found_keyvalue (
+  key char(20),
+  value text,
+  primary key (key)
+);
+
+CREATE TABLE IF NOT EXISTS found_password_reset (
+  token varchar(128) not null,
+  username varchar(100) not null,
+  expired_at timestamp not null,
+  primary key (token)
+);
+
+ 

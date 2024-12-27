@@ -7,12 +7,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+
+import mako3.found.controller.AdminSpacesController;
 
 // based on https://spring.pleiades.io/guides/gs/uploading-files
 @Component
 public class FileSystemStorageService {
+
+    private static Log logger = LogFactory.getLog(AdminSpacesController.class);
 
     private Path rootLocation = Paths.get("upload-dir");
 
@@ -43,6 +49,7 @@ public class FileSystemStorageService {
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, destinationFile,
                         StandardCopyOption.REPLACE_EXISTING);
+                logger.info(String.format("succeeded to store file %s", filename));
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file.", e);
