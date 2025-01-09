@@ -2,6 +2,7 @@ package mako3.found.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,10 @@ public class UserDao {
         return jdbcTemplate.query("select * from found_users", new JdbcRowMapper());
     }
 
+    public void updateLastLogin(String username) {
+        jdbcTemplate.update("update found_users set last_login = now() where username = ?", username);
+    }
+
     public class JdbcRowMapper implements RowMapper<CustomUserDetails> {
 
         @Override
@@ -37,8 +42,10 @@ public class UserDao {
             String role = rs.getString("role");
             String emailForNotification = rs.getString("email_for_notification");
             String emailForMessageIdentity = rs.getString("email_for_message_identity");
+            LocalDateTime lastLogin = rs.getObject("last_login", LocalDateTime.class);
 
-            return new CustomUserDetails(password, username, role, emailForNotification, emailForMessageIdentity);
+            return new CustomUserDetails(password, username, role, emailForNotification, emailForMessageIdentity,
+                    lastLogin);
         }
     }
 }

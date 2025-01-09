@@ -13,15 +13,13 @@ CREATE TABLE IF NOT EXISTS gchat_messages1(
   PRIMARY KEY (message_id)
 );
 
-CALL paradedb.create_bm25(
-  index_name => 'gchat_messages1_index',
-  table_name => 'gchat_messages1',
-  key_field => 'message_id',
-  text_fields => paradedb.field(
-	name => 'message_text', 
-	tokenizer => paradedb.tokenizer('japanese_lindera')
-  ),
-  datetime_fields => paradedb.field('created_date')
+CREATE INDEX found_messages_index ON gchat_messages1 
+USING bm25 (message_id, space_id, message_text, created_date, creator_email)
+WITH (
+  key_field='message_id',
+  text_fields='{
+    "message_text":{"tokenizer": {"type": "japanese_lindera"}}
+  }'
 );
 
 CREATE TABLE IF NOT EXISTS gchat_spaces1 (
@@ -40,6 +38,7 @@ CREATE TABLE IF NOT EXISTS found_users (
     username varchar(100) not null,
     password varchar(500) not null,
     role varchar(10) not null,
+    last_login timestamp,
     email_for_notification varchar(100),
     email_for_message_identity varchar(100),
     primary key (username)

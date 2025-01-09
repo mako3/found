@@ -93,8 +93,8 @@
         <h2>DB登録済みのスペース一覧</h2>
         <table border="1">
             <tr>
-                <th>name</th>
-                <th>displayName</th>
+                <th>spaceId</th>
+                <th>spaceName</th>
                 <th>accessState</th>
                 <th>memberCount</th>
                 <th>messageCount</th>
@@ -139,12 +139,14 @@
                 <th>role</th>
                 <th>email_for_notification</th>
                 <th>email_for_message_identity</th>
+                <th>last_login</th>
             </tr>
             <tr th:each="user:${userList}">
                 <td><span th:text="${user.username}"></span></td>
                 <td><span th:text="${user.role}"></span></td>
                 <td><span th:text="${user.emailForNotification}"></span></td>
                 <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+                <td><span th:text="${user.lastLogin}"></span></td>
             </tr>
         </table>
 

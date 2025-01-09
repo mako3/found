@@ -5,12 +5,14 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 
 import mako3.found.service.FileSystemStorageService;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 
 @SpringBootApplication
+@EnableCaching
 public class FoundApplication {
 
 	private static Log logger = LogFactory.getLog(FoundApplication.class);
@@ -23,7 +25,7 @@ public class FoundApplication {
 	CommandLineRunner init(FileSystemStorageService storageService) {
 		return (args) -> {
 			storageService.init();
-		}
+		};
 	}
 
 	@Bean

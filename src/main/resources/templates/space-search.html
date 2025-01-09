@@ -6,7 +6,11 @@
         function search() {
             const link = /*[[@{/spaces}]]*/'';
             var spaceName = document.getElementById("keyword").value;
-            location.href = link + "?displayName=" + encodeURIComponent(spaceName);
+            var queryScope = document.querySelector("input[name='q1']:checked").value;
+
+            location.href = link + "?"
+                + "queryScope=" + queryScope + "&"
+                + "displayName=" + encodeURIComponent(spaceName);
         }
     </script>
 </head>
@@ -23,13 +27,15 @@
                 <input type="text" id="keyword" size="80" th:value="${keyword}"></input>
             </div>
             <div style="display:flex;">
-                <span style="padding:10px;width:200px">スペース範囲</span>
+                <span style="padding:10px;width:200px">検索スコープ</span>
                 <div>
                     <label class="radio">
-                        <input type="radio" name="q1" value="y" checked />自身が参加していたスペース全体(PRIVATEおよびDISCOVERABLE)
+                        <input type="radio" name="q1" value="PRIVATE_DISCOVERABLE"
+                            th:checked="${queryScope == null || queryScope eq 'PRIVATE_DISCOVERABLE'}" />自身が参加していたスペース全体
                     </label>
                     <label class="radio">
-                        <input type="radio" name="q1" value="n" />DISCOVERABLEなスペース全体
+                        <input type="radio" name="q1" value="DISCOVERABLE"
+                            th:checked="${queryScope} eq 'DISCOVERABLE'" />DISCOVERABLEなスペース全体(参加していないスペースを含む)
                     </label>
                 </div>
             </div>
@@ -39,8 +45,8 @@
         <h2>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h2>
         <table border="1">
             <tr>
-                <th>name</th>
-                <th>displayName</th>
+                <th>spaceId</th>
+                <th>spaceName</th>
                 <th>accessState</th>
                 <th>memberCount</th>
                 <th>messageCount</th>

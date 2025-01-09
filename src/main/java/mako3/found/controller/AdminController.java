@@ -42,7 +42,7 @@ public class AdminController {
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public String admin(Model model) {
-        List<ChatSpace> spaceList = spaceService.findAll();
+        List<ChatSpace> spaceList = spaceService.listAllFresh();
         List<CustomUserDetails> userList = userService.loadAllUsers();
         model.addAttribute("userList", userList);
         model.addAttribute("spaceList", spaceList);

@@ -10,10 +10,14 @@ import lombok.Data;
 @Builder
 public class ChatSpace {
 
+    public static final String DISCOVERABLE = "DISCOVERABLE";
+    public static final String PRIVATE = "PRIVATE";
+
     private String spaceId;
 
     private String displayName;
 
+    // PRIVATE or DISCOVERABLE
     private String accessState;
 
     private String lastImportedUser;

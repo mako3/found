@@ -14,6 +14,8 @@ public class ChatMessage {
 
     private String spaceId;
 
+    private String spaceName;
+
     private String creatorName;
 
     private String creatorEmail;

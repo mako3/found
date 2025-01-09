@@ -1,0 +1,17 @@
+spring:
+    application:
+        name: found
+    datasource:
+        url: jdbc:postgresql://localhost:5432/postgres1
+        username: postgres1
+        password: admin
+    servlet:
+        multipart:
+            max-file-size: 200MB
+            max-request-size: 200MB
+server:
+    servlet:
+        context-path: /found
+    port: 80
+    session:
+        timeout: 86400

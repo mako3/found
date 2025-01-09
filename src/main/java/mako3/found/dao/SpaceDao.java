@@ -9,6 +9,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +21,21 @@ public class SpaceDao {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public List<ChatSpace> findByName(String displayName) {
-        return jdbcTemplate.query("select * from gchat_spaces1 where display_name like ?",
-                new JdbcRowMapper(), "%" + displayName + "%");
+    @Autowired
+    private NamedParameterJdbcTemplate namedJdbcTemplate;
+
+    public List<ChatSpace> findByName(List<String> accessibleSpaceIds, String displayName) {
+        String sql = "select * from gchat_spaces1 where display_name like :displayName ";
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("displayName", "%" + displayName + "%");
+
+        // filter by accessible space ids
+        if (!accessibleSpaceIds.isEmpty()) {
+            sql += "AND space_id IN (:spaceIds) ";
+            parameters.addValue("spaceIds", accessibleSpaceIds);
+        }
+
+        return namedJdbcTemplate.query(sql, parameters, new JdbcRowMapper());
     }
 
     public List<ChatSpace> findByMember(String memberId) {

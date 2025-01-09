@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import mako3.found.auth.CustomUserDetails;
 import mako3.found.entity.ChatMessage;
 import mako3.found.entity.ChatSpace;
 import mako3.found.service.MessageService;
@@ -35,9 +36,11 @@ public class MessageController {
             @RequestParam(name = "limit", defaultValue = "100") int limit,
             Model model) {
 
+        CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
+
         if (dateFrom == null && dateBefore == null) {
-            List<ChatMessage> messages = messageService.list(spaceId, limit + 1);
-            ChatSpace space = spaceService.findOne(spaceId);
+            List<ChatMessage> messages = messageService.list(user, spaceId, limit + 1);
+            ChatSpace space = spaceService.getOneCached(spaceId);
             model.addAttribute("space", space);
             model.addAttribute("messageList", messages);
             if (messages.size() > limit) {
@@ -46,8 +49,8 @@ public class MessageController {
             }
         } else if (dateFrom != null) {
             LocalDateTime datetimeFrom = LocalDateTime.parse(dateFrom, ChatMessage.FORMATTER);
-            List<ChatMessage> messages = messageService.listFrom(spaceId, datetimeFrom, limit + 1);
-            ChatSpace space = spaceService.findOne(spaceId);
+            List<ChatMessage> messages = messageService.listFrom(user, spaceId, datetimeFrom, limit + 1);
+            ChatSpace space = spaceService.getOneCached(spaceId);
             model.addAttribute("space", space);
             model.addAttribute("messageList", messages.subList(0, Math.min(limit, messages.size())));
             if (messages.size() > limit) {
@@ -59,8 +62,8 @@ public class MessageController {
 
         } else if (dateBefore != null) {
             LocalDateTime datetimeBefore = LocalDateTime.parse(dateBefore, ChatMessage.FORMATTER);
-            List<ChatMessage> messages = messageService.listBefore(spaceId, datetimeBefore, limit + 1);
-            ChatSpace space = spaceService.findOne(spaceId);
+            List<ChatMessage> messages = messageService.listBefore(user, spaceId, datetimeBefore, limit + 1);
+            ChatSpace space = spaceService.getOneCached(spaceId);
             model.addAttribute("space", space);
             model.addAttribute("messageList", messages.subList(0, Math.min(limit, messages.size())));
             if (messages.size() > limit) {

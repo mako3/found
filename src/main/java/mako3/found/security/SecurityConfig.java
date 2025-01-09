@@ -1,5 +1,6 @@
-package mako3.found.config;
+package mako3.found.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,6 +14,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+        @Autowired
+        private CustomLoginSuccessHandler customLoginSuccessHandler;
 
         @Bean
         PasswordEncoder passwordEncoder() {
@@ -30,15 +34,16 @@ public class SecurityConfig {
                                 .formLogin(formLogin -> formLogin
                                                 .loginPage("/login")
                                                 .failureUrl("/login?failure")
-                                                .defaultSuccessUrl("/")
+                                                //.defaultSuccessUrl("/", true)
+                                                .successHandler(customLoginSuccessHandler)
                                                 .permitAll())
-                                .exceptionHandling(exception -> exception
-                                                .accessDeniedPage("/display-access-denied"))
                                 .logout(logout -> logout
                                                 .logoutUrl("/logout")
                                                 .logoutSuccessUrl("/login")
                                                 .invalidateHttpSession(true)
                                                 .deleteCookies("JSESSIONID"))
+                                .exceptionHandling(exception -> exception
+                                                .accessDeniedPage("/display-access-denied"))
                                 .csrf(configureator -> configureator.ignoringRequestMatchers("/*"));
 
                 return http.build();
