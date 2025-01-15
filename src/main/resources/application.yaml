@@ -2,16 +2,32 @@ spring:
     application:
         name: found
     datasource:
-        url: jdbc:postgresql://localhost:5432/postgres1
-        username: postgres1
-        password: admin
+        url: ${DATASOURCE:jdbc:postgresql://localhost:5432/postgres1}
+        username: ${POSTGRES_USER:postgres1}
+        password: ${POSTGRES_PASSWORD:admin}
     servlet:
         multipart:
             max-file-size: 200MB
             max-request-size: 200MB
+    mail:
+        port: 1000
+        username:
+        password:
+        properties:
+            mail:
+                smtp:
+                    auth: false
+                    starttls:
+                        enable: false
+    sql:
+        init:
+            platform: postgres
+            mode: always
+            schema-locations: classpath:/schema.sql
+            data-locations: classpath:/data.sql
 server:
     servlet:
         context-path: /found
-    port: 80
+    port: 8080
     session:
         timeout: 86400

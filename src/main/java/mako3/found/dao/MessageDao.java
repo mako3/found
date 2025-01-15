@@ -30,14 +30,22 @@ public class MessageDao {
     public List<ChatMessage> findByTerms(List<String> accessibleSpaceIds, List<String> sanitizedTermList,
             LocalDate startDate, LocalDate endDate, String creatorEmail, int limit) {
 
-        String sql = "SELECT * FROM gchat_messages1 WHERE message_text @@@ :messageText ";
+        String sql = "SELECT * FROM gchat_messages1 WHERE ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("messageText", String.join(" AND ", sanitizedTermList));
 
         // filter by accessible space ids
         if (!accessibleSpaceIds.isEmpty()) {
-            sql += "AND space_id IN (:spaceIds) ";
+            sql += "space_id IN (:spaceIds) ";
             parameters.addValue("spaceIds", accessibleSpaceIds);
+        } else {
+            // for irregular situation
+            sql += "space_id = '' ";
+        }
+
+        // filter by terms
+        if (!sanitizedTermList.isEmpty()) {
+            sql += "AND message_text @@@ :messageText ";
+            parameters.addValue("messageText", String.join(" AND ", sanitizedTermList));
         }
 
         // filter by created_date
@@ -60,8 +68,8 @@ public class MessageDao {
         }
 
         // limit clause
-        parameters.addValue("limit", limit);
         sql += "limit :limit";
+        parameters.addValue("limit", limit);
 
         return namedJdbcTemplate.query(
                 sql,

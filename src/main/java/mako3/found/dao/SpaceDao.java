@@ -18,6 +18,7 @@ import mako3.found.entity.ChatSpace;
 
 @Component
 public class SpaceDao {
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -33,6 +34,9 @@ public class SpaceDao {
         if (!accessibleSpaceIds.isEmpty()) {
             sql += "AND space_id IN (:spaceIds) ";
             parameters.addValue("spaceIds", accessibleSpaceIds);
+        } else {
+            // for irregular situation
+            sql += "AND space_id = '' ";
         }
 
         return namedJdbcTemplate.query(sql, parameters, new JdbcRowMapper());

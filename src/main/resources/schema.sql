@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS gchat_messages1(
   PRIMARY KEY (message_id)
 );
 
-CREATE INDEX found_messages_index ON gchat_messages1 
+CREATE INDEX IF NOT EXISTS found_messages_index ON gchat_messages1 
 USING bm25 (message_id, space_id, message_text, created_date, creator_email)
 WITH (
   key_field='message_id',

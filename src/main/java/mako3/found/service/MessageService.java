@@ -65,7 +65,10 @@ public class MessageService {
     }
 
     private List<ChatMessage> findByTerms(CustomUserDetails user, MessageQuery query) {
-        List<String> sanitizedTermList = List.of(query.getKeyword().replaceAll("　", " ").split(" "));
+        String[] sanitizedTermArray = query.getKeyword().replaceAll("　", " ").split("\s");
+        List<String> sanitizedTermList = sanitizedTermArray.length == 1 && sanitizedTermArray[0].isEmpty()
+                ? List.of()
+                : List.of(sanitizedTermArray);
         List<String> accessibleSpaceIds = defineSpacesForSearch(user, query);
 
         return messageDao.findByTerms(accessibleSpaceIds, sanitizedTermList, query.getStartDate(), query.getEndDate(),
