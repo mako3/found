@@ -30,7 +30,7 @@ public class MessageDao {
     public List<ChatMessage> findByTerms(List<String> accessibleSpaceIds, List<String> sanitizedTermList,
             LocalDate startDate, LocalDate endDate, String creatorEmail, int limit) {
 
-        String sql = "SELECT * FROM gchat_messages1 WHERE ";
+        String sql = "SELECT * FROM found_messages WHERE ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
 
         // filter by accessible space ids
@@ -78,19 +78,19 @@ public class MessageDao {
 
     public List<ChatMessage> list(String spaceId, int limit) {
         return jdbcTemplate.query(
-                "select * from gchat_messages1 where space_id = ? order by topic_created_date asc, created_date asc limit ?",
+                "select * from found_messages where space_id = ? order by topic_created_date asc, created_date asc limit ?",
                 new JdbcRowMapper(), spaceId, limit);
     }
 
     public List<ChatMessage> listFrom(String spaceId, LocalDateTime dateFrom, int limit) {
         return jdbcTemplate.query(
-                "select * from gchat_messages1 where space_id = ? and created_date >= ? order by topic_created_date asc, created_date asc limit ?",
+                "select * from found_messages where space_id = ? and created_date >= ? order by topic_created_date asc, created_date asc limit ?",
                 new JdbcRowMapper(), spaceId, dateFrom, limit);
     }
 
     public List<ChatMessage> listBefore(String spaceId, LocalDateTime dateBefore, int limit) {
         List<ChatMessage> list = jdbcTemplate.query(
-                "select * from gchat_messages1 where space_id = ? and created_date < ? order by topic_created_date desc, created_date desc limit ?",
+                "select * from found_messages where space_id = ? and created_date < ? order by topic_created_date desc, created_date desc limit ?",
                 new JdbcRowMapper(), spaceId, dateBefore, limit);
         Collections.reverse(list);
         return list;
@@ -98,13 +98,13 @@ public class MessageDao {
 
     public List<ChatMessage> findByUrl(String messageUrl) {
         String messageId = messageUrl.replace("https://chat.google.com/room/", "");
-        return jdbcTemplate.query("select * from gchat_messages1 where message_id = ?",
+        return jdbcTemplate.query("select * from found_messages where message_id = ?",
                 new JdbcRowMapper(), messageId);
     }
 
     public void insert(List<ChatMessage> list) {
         list.stream().forEach(e -> jdbcTemplate.update(
-                "insert into gchat_messages1 (space_id, creator_name, creator_email, creator_user_type, created_date, message_text, topic_id, message_id, thread_reply, has_reply) values (?,?,?,?,?,?,?,?, false, false)",
+                "insert into found_messages (space_id, creator_name, creator_email, creator_user_type, created_date, message_text, topic_id, message_id, thread_reply, has_reply) values (?,?,?,?,?,?,?,?, false, false)",
                 e.getSpaceId(),
                 e.getCreatorName(),
                 e.getCreatorEmail(),
@@ -116,29 +116,29 @@ public class MessageDao {
     }
 
     public boolean checkMessageExistsBySpaceId(String spaceId) {
-        return jdbcTemplate.queryForObject("select count(*) from gchat_messages1 where space_id = ?",
+        return jdbcTemplate.queryForObject("select count(*) from found_messages where space_id = ?",
                 Integer.class, spaceId) > 0;
     }
 
     public int deleteMessagesbySpaceId(String spaceId) {
-        return jdbcTemplate.update("delete from gchat_messages1 where space_id = ?", spaceId);
+        return jdbcTemplate.update("delete from found_messages where space_id = ?", spaceId);
     }
 
     public int updateThreadReplyBySpaceId(String spaceId) {
         return jdbcTemplate.update(
-                "UPDATE gchat_messages1 parent SET thread_reply = '1' WHERE space_id = ? AND EXISTS (SELECT * FROM gchat_messages1 child WHERE parent.space_id = child.space_id AND parent.topic_id = child.topic_id AND child.created_date < parent.created_date);",
+                "UPDATE found_messages parent SET thread_reply = '1' WHERE space_id = ? AND EXISTS (SELECT * FROM found_messages child WHERE parent.space_id = child.space_id AND parent.topic_id = child.topic_id AND child.created_date < parent.created_date);",
                 spaceId);
     }
 
     public int updateTopicCreatedDateBySpaceId(String spaceId) {
         return jdbcTemplate.update(
-                "update gchat_messages1 parent set topic_created_date = (select min(child.created_date) from gchat_messages1 child where child.space_id = parent.space_id AND child.topic_id = parent.topic_id and child.thread_reply is not true) where parent.space_id=?;",
+                "update found_messages parent set topic_created_date = (select min(child.created_date) from found_messages child where child.space_id = parent.space_id AND child.topic_id = parent.topic_id and child.thread_reply is not true) where parent.space_id=?;",
                 spaceId);
     }
 
     public int updateHasReplyBySpaceId(String spaceId) {
         return jdbcTemplate.update(
-                "update gchat_messages1 parent set has_reply = '1' where space_id = ? AND thread_reply is false and exists (select * from gchat_messages1 child where parent.space_id = child.space_id and parent.topic_id = child.topic_id and child.thread_reply is true);",
+                "update found_messages parent set has_reply = '1' where space_id = ? AND thread_reply is false and exists (select * from found_messages child where parent.space_id = child.space_id and parent.topic_id = child.topic_id and child.thread_reply is true);",
                 spaceId);
     }
 

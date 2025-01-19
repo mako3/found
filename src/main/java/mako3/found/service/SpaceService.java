@@ -3,7 +3,9 @@ package mako3.found.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Component;
 
 import mako3.found.auth.CustomUserDetails;
@@ -56,6 +58,34 @@ public class SpaceService {
     @Cacheable("space-one")
     public ChatSpace getOneCached(String spaceId) {
         return spaceDao.findOne(spaceId);
+    }
+
+    public ChatSpace getOne(String spaceId) {
+        return spaceDao.findOne(spaceId);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "space-one", key = "#p0"),
+            @CacheEvict(value = "space-list", allEntries = true)
+    })
+    public void updateLastImported(String spaceId, String executorName) {
+        spaceDao.updateLastImported(spaceId, executorName);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "space-one", key = "#p0"),
+            @CacheEvict(value = "space-list", allEntries = true)
+    })
+    public void updateMemberIds(String spaceId, List<String> memberIds) {
+        spaceDao.updateMemberIds(spaceId, memberIds);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "space-one", key = "#p0"),
+            @CacheEvict(value = "space-list", allEntries = true)
+    })
+    public void updateMessageCount(String spaceId, int messageCount) {
+        spaceDao.updateMessageCount(spaceId, messageCount);
     }
 
 }

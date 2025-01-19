@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+    <!-- include jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+    <script type="text/javascript" th:inline="javascript">
+
+        function resetPassword(username) {
+            const link = /*[[@{/resetPassword}]]*/'';
+            var formData = new FormData();
+            formData.append('username', username);
+            $.ajax(
+                link,
+                {
+                    type: 'post',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    dataType: "html",
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        alert("ERROR");
+                        alert(textStatus);
+                        alert(errorThrown);
+                    }
+                });
+        }
+
+    </script>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <div style="display: flex; min-height: 100vh;">
+            <div style="min-width: 200px; padding: 10px 20px;">
+                <ul>
+                    <li><a th:href="@{/admin}">一般</a></li>
+                    <li><a th:href="@{/admin/users}">ユーザー管理</a></li>
+                    <li><a th:href="@{/admin/spaces}">スペース管理</a></li>
+                </ul>
+            </div>
+            <div style="flex-grow: 1;">
+                <h2>DB登録済みのユーザー一覧</h2>
+                <table border="1">
+                    <tr>
+                        <th>username</th>
+                        <th>role</th>
+                        <th>email_for_notification</th>
+                        <th>email_for_message_identity</th>
+                        <th>last_login</th>
+                        <th>reset password</th>
+                    </tr>
+                    <tr th:each="user:${userList}">
+                        <td><span th:text="${user.username}"></span></td>
+                        <td><span th:text="${user.role}"></span></td>
+                        <td><span th:text="${user.emailForNotification}"></span></td>
+                        <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+                        <td><span th:text="${user.lastLogin}"></span></td>
+                        <td th:onclick="|resetPassword('__${user.username}__');|"><button>Reset Password</button></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+
+
+    </div>
+</body>
+
+</html>

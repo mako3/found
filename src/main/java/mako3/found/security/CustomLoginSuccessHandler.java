@@ -2,6 +2,8 @@ package mako3.found.security;
 
 import java.io.IOException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
@@ -19,6 +21,8 @@ import mako3.found.auth.CustomUserDetailsService;
 @Component
 public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
+    private static Log logger = LogFactory.getLog(CustomLoginSuccessHandler.class);
+
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Autowired
@@ -33,6 +37,8 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         String userName = authentication.getName();
         userService.updateLastLogin(userName);
+
+        logger.info(String.format("login succeeded by %s", userName));
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 

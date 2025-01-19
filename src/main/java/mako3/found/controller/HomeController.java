@@ -3,6 +3,7 @@ package mako3.found.controller;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Controller;
@@ -11,9 +12,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import mako3.found.auth.CustomUserDetails;
 import mako3.found.entity.ChatSpace;
+import mako3.found.service.NoticeService;
 
 @Controller
 public class HomeController {
+
+	@Autowired
+	private NoticeService noticeService;
 
 	@GetMapping(value = "/")
 	public String home(@CurrentSecurityContext SecurityContext context, Model model) {
@@ -21,6 +26,7 @@ public class HomeController {
 		List<ChatSpace> list = user.getMemberSpaces();
 		model.addAttribute("userList", Arrays.asList(user));
 		model.addAttribute("spaceList", list);
+		model.addAttribute("notice", noticeService.getNotice());
 
 		return "home";
 	}

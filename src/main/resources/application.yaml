@@ -2,17 +2,20 @@ spring:
     application:
         name: found
     datasource:
-        url: ${DATASOURCE:jdbc:postgresql://localhost:5432/postgres1}
-        username: ${POSTGRES_USER:postgres1}
+        url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:postgres}
+        username: ${POSTGRES_USER:postgres}
         password: ${POSTGRES_PASSWORD:admin}
     servlet:
         multipart:
             max-file-size: 200MB
             max-request-size: 200MB
     mail:
-        port: 1000
-        username:
-        password:
+        port: # value on found_keyvalue table is used
+        host: # value on found_keyvalue table is used
+        default-encoding: UTF-8
+        protocol: smtp
+        username: # value on found_keyvalue table is used
+        password: # value on found_keyvalue table is used
         properties:
             mail:
                 smtp:
@@ -31,3 +34,10 @@ server:
     port: 8080
     session:
         timeout: 86400
+
+logging:
+    level:
+        org:
+            springframework: INFO
+        mako3:
+            found: INFO

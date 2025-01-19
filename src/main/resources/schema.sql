@@ -1,4 +1,6 @@
-CREATE TABLE IF NOT EXISTS gchat_messages1(
+SET timezone TO 'Asia/Tokyo';
+
+CREATE TABLE IF NOT EXISTS found_messages(
   space_id varchar(12) NOT NULL,
   creator_name varchar(40),
   creator_email varchar(40),
@@ -13,7 +15,7 @@ CREATE TABLE IF NOT EXISTS gchat_messages1(
   PRIMARY KEY (message_id)
 );
 
-CREATE INDEX IF NOT EXISTS found_messages_index ON gchat_messages1 
+CREATE INDEX IF NOT EXISTS found_messages_index ON found_messages 
 USING bm25 (message_id, space_id, message_text, created_date, creator_email)
 WITH (
   key_field='message_id',
@@ -22,7 +24,7 @@ WITH (
   }'
 );
 
-CREATE TABLE IF NOT EXISTS gchat_spaces1 (
+CREATE TABLE IF NOT EXISTS found_spaces (
   space_id varchar(20) NOT NULL,
   display_name varchar(50) NOT NULL,
   access_state varchar(12),
@@ -42,4 +44,10 @@ CREATE TABLE IF NOT EXISTS found_users (
     email_for_notification varchar(100),
     email_for_message_identity varchar(100),
     primary key (username)
-)
+);
+
+CREATE TABLE IF NOT EXISTS found_keyvalue (
+  key char(20),
+  value text,
+  primary key (key)
+);

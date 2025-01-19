@@ -3,6 +3,8 @@ package mako3.found.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,8 @@ import mako3.found.entity.MessageQuery;
 
 @Component
 public class MessageService {
+
+    private static Log logger = LogFactory.getLog(MessageImportService.class);
 
     @Autowired
     private MessageDao messageDao;

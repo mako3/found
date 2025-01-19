@@ -29,7 +29,6 @@ public class SpaceSearchController {
             Model model) {
 
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
-
         if (displayName != null) {
             SpaceQuery query = SpaceQuery.builder()
                     .spaceName(displayName)

@@ -32,6 +32,10 @@ public class UserDao {
         jdbcTemplate.update("update found_users set last_login = now() where username = ?", username);
     }
 
+    public void updatePassword(String username, String password) {
+        jdbcTemplate.update("update found_users set password = ? where username = ?", password, username);
+    }
+
     public class JdbcRowMapper implements RowMapper<CustomUserDetails> {
 
         @Override

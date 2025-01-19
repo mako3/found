@@ -26,7 +26,7 @@ public class SpaceDao {
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
     public List<ChatSpace> findByName(List<String> accessibleSpaceIds, String displayName) {
-        String sql = "select * from gchat_spaces1 where display_name like :displayName ";
+        String sql = "select * from found_spaces where display_name like :displayName ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("displayName", "%" + displayName + "%");
 
@@ -43,34 +43,34 @@ public class SpaceDao {
     }
 
     public List<ChatSpace> findByMember(String memberId) {
-        return jdbcTemplate.query("select * from gchat_spaces1 where ? = any(member_ids);",
+        return jdbcTemplate.query("select * from found_spaces where ? = any(member_ids);",
                 new JdbcRowMapper(), memberId);
     }
 
     public List<ChatSpace> findAll() {
-        return jdbcTemplate.query("select * from gchat_spaces1",
+        return jdbcTemplate.query("select * from found_spaces",
                 new JdbcRowMapper());
     }
 
     public ChatSpace findOne(String spaceId) {
-        return jdbcTemplate.queryForObject("select * from gchat_spaces1 where space_id = ?",
+        return jdbcTemplate.queryForObject("select * from found_spaces where space_id = ?",
                 new JdbcRowMapper(), spaceId);
     }
 
     public void updateMemberIds(String spaceId, List<String> memberIds) {
         String[] array = memberIds.toArray(new String[0]);
-        jdbcTemplate.update("update gchat_spaces1 set member_ids = ?, member_count = ?  where space_id = ?",
+        jdbcTemplate.update("update found_spaces set member_ids = ?, member_count = ?  where space_id = ?",
                 array, memberIds.size(), spaceId);
     }
 
     public void updateLastImported(String spaceId, String executorName) {
         jdbcTemplate.update(
-                "update gchat_spaces1 set last_imported_date = current_timestamp, last_imported_user = ? where space_id = ?",
+                "update found_spaces set last_imported_date = current_timestamp, last_imported_user = ? where space_id = ?",
                 executorName, spaceId);
     }
 
     public void updateMessageCount(String spaceId, int messageCount) {
-        jdbcTemplate.update("update gchat_spaces1 set message_count = ? where space_id = ?",
+        jdbcTemplate.update("update found_spaces set message_count = ? where space_id = ?",
                 messageCount, spaceId);
     }
 

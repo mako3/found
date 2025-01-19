@@ -2,10 +2,17 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 
 <head>
+    <script type="text/javascript" th:inline="javascript">
+    </script>
+
 </head>
 
 <body>
     <div layout:fragment="contents">
+
+        <h2>お知らせ</h2>
+        <section th:text="${notice}"></section>
+
 
         <h2>メニュー</h2>
         <ul>
