@@ -1,3 +1,4 @@
+SET paradedb.create_index_memory_budget = 512;
 SET timezone TO 'Asia/Tokyo';
 
 CREATE TABLE IF NOT EXISTS found_messages(

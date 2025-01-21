@@ -65,7 +65,7 @@ public class SpaceService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "space-one", key = "#p0"),
+            @CacheEvict(value = "space-one", key = "#spaceId"),
             @CacheEvict(value = "space-list", allEntries = true)
     })
     public void updateLastImported(String spaceId, String executorName) {
@@ -73,7 +73,7 @@ public class SpaceService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "space-one", key = "#p0"),
+            @CacheEvict(value = "space-one", key = "#spaceId"),
             @CacheEvict(value = "space-list", allEntries = true)
     })
     public void updateMemberIds(String spaceId, List<String> memberIds) {
@@ -81,7 +81,7 @@ public class SpaceService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "space-one", key = "#p0"),
+            @CacheEvict(value = "space-one", key = "#spaceId"),
             @CacheEvict(value = "space-list", allEntries = true)
     })
     public void updateMessageCount(String spaceId, int messageCount) {

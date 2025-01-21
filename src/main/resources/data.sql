@@ -7,3 +7,4 @@ INSERT INTO found_keyvalue (key, value) VALUES ('mail.from', '') ON CONFLICT DO 
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.port', '25') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.host', '') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('notice', '') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('fulltext.index', 'enabled') ON CONFLICT DO NOTHING;

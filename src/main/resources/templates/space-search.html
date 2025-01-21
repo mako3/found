@@ -18,9 +18,9 @@
 <body>
     <div layout:fragment="contents">
 
-        <h1>スペースを探す</h1>
+        <h2>スペースを探す</h2>
 
-        <h2>検索条件</h2>
+        <h3>検索条件</h3>
         <div class="search-area">
             <div>
                 <span style="padding:10px;width:200px">スペース名</span>
@@ -42,7 +42,7 @@
             <input type="button" value="検索" onclick="search();">
         </div>
 
-        <h2>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h2>
+        <h3>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h3>
         <table border="1">
             <tr>
                 <th>spaceId</th>
@@ -56,8 +56,7 @@
             </tr>
             <tr th:each="space:${spaceList}">
                 <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">
-                        <span th:text="${space.spaceId}"></span></td>
-                </a>
+                        <span th:text="${space.spaceId}"></span></a></td>
                 <td><span th:text="${space.displayName}"></span></td>
                 <td><span th:text="${space.accessState}"></span></td>
                 <td><span th:text="${space.memberCount}"></span></td>

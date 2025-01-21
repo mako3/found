@@ -26,7 +26,7 @@ public class MailPropertyService {
 
         return MailProperty.builder()
                 .smtpHost(smtpHost)
-                .stmpPort(smtpPort != null ? Integer.parseInt(smtpPort) : 0)
+                .smtpPort(smtpPort != null ? Integer.parseInt(smtpPort) : 0)
                 .smtpUsername(smtpUsername)
                 .smtpPassword(smtpPassword)
                 .mailSubject(mailSubject)
@@ -36,8 +36,17 @@ public class MailPropertyService {
 
     }
 
-    @CacheEvict("mail-property")
-    public void updateMailProperty(MailProperty mailProperty) {
+    @CacheEvict(value = "mail-property", allEntries = true)
+    public void updateMailProperty(MailProperty prop) {
+
+        keyValueDao.updateValue("mail.host", prop.getSmtpHost());
+        keyValueDao.updateValue("mail.port", String.valueOf(prop.getSmtpPort()));
+        keyValueDao.updateValue("mail.username", prop.getSmtpUsername());
+        keyValueDao.updateValue("mail.password", prop.getSmtpPassword());
+        keyValueDao.updateValue("mail.subject", prop.getMailSubject());
+        keyValueDao.updateValue("mail.body", prop.getMailBodyTemplate());
+        keyValueDao.updateValue("mail.from", prop.getMailFrom());
+
     }
 
 }

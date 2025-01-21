@@ -25,11 +25,11 @@ public class UserDao {
     }
 
     public List<CustomUserDetails> getAll() {
-        return jdbcTemplate.query("select * from found_users", new JdbcRowMapper());
+        return jdbcTemplate.query("select * from found_users order by last_login desc", new JdbcRowMapper());
     }
 
     public void updateLastLogin(String username) {
-        jdbcTemplate.update("update found_users set last_login = now() where username = ?", username);
+        jdbcTemplate.update("update found_users set last_login =  current_timestamp where username = ?", username);
     }
 
     public void updatePassword(String username, String password) {

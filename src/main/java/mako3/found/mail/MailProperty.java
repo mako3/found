@@ -9,7 +9,7 @@ public class MailProperty {
 
     private String smtpHost;
 
-    private int stmpPort;
+    private int smtpPort;
 
     private String smtpUsername;
 

@@ -17,6 +17,7 @@ import mako3.found.entity.ChatMessage;
 import mako3.found.entity.MessageQuery;
 import mako3.found.entity.MessageQuery.QueryScope;
 import mako3.found.entity.MessageQuery.QueryType;
+import mako3.found.service.FulltextSettingsService;
 import mako3.found.service.MessageService;
 
 @Controller
@@ -24,6 +25,9 @@ public class MessageSearchController {
 
     @Autowired
     private MessageService service;
+
+    @Autowired
+    private FulltextSettingsService fulltextService;
 
     @GetMapping(value = "/messages")
     public String findMessages(
@@ -65,6 +69,8 @@ public class MessageSearchController {
             model.addAttribute("endDate", endDate);
         }
 
+        // show warning message when fulltext search is disabled
+        model.addAttribute("fulltextEnabled", fulltextService.isFulltextEnabled() ? "enabled" : "disabled");
         return "message-search";
     }
 

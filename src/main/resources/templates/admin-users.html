@@ -36,39 +36,25 @@
 <body>
     <div layout:fragment="contents">
 
-        <div style="display: flex; min-height: 100vh;">
-            <div style="min-width: 200px; padding: 10px 20px;">
-                <ul>
-                    <li><a th:href="@{/admin}">一般</a></li>
-                    <li><a th:href="@{/admin/users}">ユーザー管理</a></li>
-                    <li><a th:href="@{/admin/spaces}">スペース管理</a></li>
-                </ul>
-            </div>
-            <div style="flex-grow: 1;">
-                <h2>DB登録済みのユーザー一覧</h2>
-                <table border="1">
-                    <tr>
-                        <th>username</th>
-                        <th>role</th>
-                        <th>email_for_notification</th>
-                        <th>email_for_message_identity</th>
-                        <th>last_login</th>
-                        <th>reset password</th>
-                    </tr>
-                    <tr th:each="user:${userList}">
-                        <td><span th:text="${user.username}"></span></td>
-                        <td><span th:text="${user.role}"></span></td>
-                        <td><span th:text="${user.emailForNotification}"></span></td>
-                        <td><span th:text="${user.emailForMessageIdentity}"></span></td>
-                        <td><span th:text="${user.lastLogin}"></span></td>
-                        <td th:onclick="|resetPassword('__${user.username}__');|"><button>Reset Password</button></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-
-
+        <h2>DB登録済みのユーザー一覧</h2>
+        <table border="1">
+            <tr>
+                <th>username</th>
+                <th>role</th>
+                <th>email_for_notification</th>
+                <th>email_for_message_identity</th>
+                <th>last_login</th>
+                <th>reset password</th>
+            </tr>
+            <tr th:each="user:${userList}">
+                <td><span th:text="${user.username}"></span></td>
+                <td><span th:text="${user.role}"></span></td>
+                <td><span th:text="${user.emailForNotification}"></span></td>
+                <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+                <td><span th:text="${user.lastLogin}"></span></td>
+                <td th:onclick="|resetPassword('__${user.username}__');|"><button>Reset Password</button></td>
+            </tr>
+        </table>
 
     </div>
 </body>

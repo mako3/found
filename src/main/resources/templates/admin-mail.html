@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h2>パスワード通知メール設定</h2>
+        <form th:action="@{/admin/updateMailSettings}" method="post" th:object="${mail}">
+            <div>
+                <label for="smtpHost">SMTP Host</label>
+                <input type="text" id="smtpHost" name="smtpHost" th:value="*{smtpHost}" style="width:500px;" />
+            </div>
+
+            <div>
+                <label for="smtpPort">SMTP Port</label>
+                <input type="number" id="smtpPort" name="smtpPort" th:value="*{smtpPort}" />
+            </div>
+
+            <div>
+                <label for="smtpUsername">SMTP Username</label>
+                <input type="text" id="smtpUsername" name="smtpUsername" th:value="*{smtpUsername}"
+                    style="width:400px;" />
+            </div>
+
+            <div>
+                <label for="smtpPassword">SMTP Password</label>
+                <input type="text" id="smtpPassword" name="smtpPassword" th:value="*{smtpPassword}"
+                    style="width:400px;" />
+            </div>
+
+            <div>
+                <label for="mailFrom">Mail From</label>
+                <input type="text" id="mailFrom" name="mailFrom" th:value="*{mailFrom}" style="width:500px;" />
+            </div>
+
+            <div>
+                <label for="mailSubject">Mail Subject</label>
+                <input type="text" id="mailSubject" name="mailSubject" th:value="*{mailSubject}" style="width:700px;" />
+            </div>
+
+            <div>
+                <label for="mailBodyTemplate">Mail Body</label>
+                <textarea id="mailBodyTemplate" name="mailBodyTemplate" th:text="*{mailBodyTemplate}"></textarea>
+            </div>
+
+            <input type="submit" value="更新" />
+        </form>
+
+
+    </div>
+</body>
+
+</html>

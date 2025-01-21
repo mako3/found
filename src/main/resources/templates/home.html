@@ -10,16 +10,9 @@
 <body>
     <div layout:fragment="contents">
 
+
         <h2>お知らせ</h2>
-        <section th:text="${notice}"></section>
-
-
-        <h2>メニュー</h2>
-        <ul>
-            <li><a th:href="@{/spaces}">スペースを探す</a></li>
-            <li><a th:href="@{/messages}">メッセージを探す</a></li>
-            <li><a th:href="@{/admin}">管理画面へ</a></li>
-        </ul>
+        <section th:utext="${notice}"></section>
         <h2>あなたの登録情報</h2>
         <table border="1">
             <tr>
@@ -49,8 +42,7 @@
             </tr>
             <tr th:each="space:${spaceList}">
                 <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">
-                        <span th:text="${space.spaceId}"></span></td>
-                </a>
+                        <span th:text="${space.spaceId}"></span></a></td>
                 <td><span th:text="${space.displayName}"></span></td>
                 <td><span th:text="${space.accessState}"></span></td>
                 <td><span th:text="${space.memberCount}"></span></td>
@@ -59,8 +51,8 @@
                 <td><span th:text="${space.lastImportedDate}"></span></td>
             </tr>
         </table>
-    </div>
 
+    </div>
 </body>
 
 </html>

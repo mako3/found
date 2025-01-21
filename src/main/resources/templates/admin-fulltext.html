@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h2>全文検索インデックス設定</h2>
+        <p>有効化処理は、メッセージ件数によっては長時間の実行時間がかかる場合があります。</p>
+        <form th:action="@{/admin/updateFulltextSettings}" method="post">
+            <label for="fulltext-enabled">有効</label>
+            <input type="radio" name="fulltext-enabled" id="fulltext-enabled" value="enabled"
+                th:checked="${fulltextEnabled eq 'enabled'}">
+
+            <label for="fulltext-disabled">無効</label>
+            <input type="radio" name="fulltext-enabled" id="fulltext-disabled" value="disabled"
+                th:checked="${fulltextEnabled eq 'disabled'}">
+            <input type="submit" value="更新" />
+        </form>
+    </div>
+</body>
+
+</html>

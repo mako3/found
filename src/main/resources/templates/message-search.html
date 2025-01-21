@@ -29,11 +29,15 @@
 <body>
     <div layout:fragment="contents">
 
-        <h1>メッセージを探す</h1>
-        <h2>検索条件</h2>
+        <div width="100%" class="alert" style="margin-top:10px;" th:if="${fulltextEnabled eq 'disabled'}">
+            全文検索インデックスは一時的に無効化されています。メッセージ検索機能は現在ご利用いただけません。
+        </div>
+
+        <h2>メッセージを探す</h2>
+        <h3>検索条件</h3>
         <div class="search-area">
             <div>
-                <select id="query-type" style="width:194px">
+                <select id="query-type" style="width:214px">
                     <option value="messageText" th:selected="${queryType} eq 'messageText'">メッセージ本文</option>
                     <option value="url" th:selected="${queryType} eq 'url'">URL</option>
                 </select>
@@ -69,7 +73,7 @@
             <input type="button" value="検索" onclick="search();">
         </div>
 
-        <h2>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h2>
+        <h3>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h3>
         <table border="1">
             <tr>
                 <th width="120px">spaceId</th>

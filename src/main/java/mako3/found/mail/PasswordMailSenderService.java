@@ -41,7 +41,7 @@ public class PasswordMailSenderService {
         // override configuration on application.yaml by database 
         JavaMailSenderImpl sender = (JavaMailSenderImpl) this.mailSender;
         sender.setHost(prop.getSmtpHost());
-        sender.setPort(prop.getStmpPort());
+        sender.setPort(prop.getSmtpPort());
         sender.setUsername(prop.getSmtpUsername());
         sender.setPassword(prop.getSmtpPassword());
 

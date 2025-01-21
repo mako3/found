@@ -6,9 +6,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>found</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jgthms/minireset.css@master/minireset.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
-    <link rel="icon" href="favicon.ico" />
+    <link rel="icon" th:href="@{/favicon.ico}" />
     <link th:href="@{/css/gchat.css}" rel="stylesheet" />
 </head>
 
@@ -24,8 +23,29 @@
         </div>
     </header>
 
-    <div layout:fragment="contents">
+    <div style="display: flex; min-height: 100vh;">
+        <div style="min-width: 200px; padding: 10px 20px;">
+            <ul>
+                <li><a th:href="@{/}">ホーム</a></li>
+                <li><a th:href="@{/spaces}">スペースを探す</a></li>
+                <li><a th:href="@{/messages}">メッセージを探す</a></li>
+            </ul>
+            <div sec:authorize="hasRole('ROLE_ADMIN')" style="margin-top:20px;">
+                <span>管理者向け</span>
+                <ul>
+                    <li><a th:href="@{/admin/users}">ユーザー管理</a></li>
+                    <li><a th:href="@{/admin/spaces}">スペース管理</a></li>
+                    <li><a th:href="@{/admin/notice}">お知らせ設定</a></li>
+                    <li><a th:href="@{/admin/mail}">メール設定</a></li>
+                    <li><a th:href="@{/admin/fulltext}">全文検索設定</a></li>
+                </ul>
+            </div>
 
+        </div>
+        <div style="flex-grow: 1;">
+            <div layout:fragment="contents">
+            </div>
+        </div>
     </div>
 </body>
 

@@ -18,7 +18,7 @@ public class NoticeService {
         return keyValueDao.getValue("notice");
     }
 
-    @CacheEvict("notice")
+    @CacheEvict(value = "notice", allEntries = true)
     public void updateNotice(String notice) {
         keyValueDao.updateValue("notice", notice);
     }
