@@ -78,8 +78,8 @@ You can login with root/root.
 
 ## Stop / Restart
 
-use 'docker container stop' comand
-use 'docker container start' command or 'docker container restart' for restart.
+* use 'docker container stop' comand
+* use 'docker container start' command or 'docker container restart' for restart.
 
 
 ## Build & Run found in your local PC

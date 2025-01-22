@@ -8,7 +8,7 @@
     <div layout:fragment="contents">
 
         <h2>全文検索インデックス設定</h2>
-        <p>有効化処理は、メッセージ件数によっては長時間の実行時間がかかる場合があります。</p>
+        <p>無効状態から有効化する際、全文検索インデックスの再構築が行われます。この時、メッセージ件数によっては長時間の実行時間がかかる場合があります。</p>
         <form th:action="@{/admin/updateFulltextSettings}" method="post">
             <label for="fulltext-enabled">有効</label>
             <input type="radio" name="fulltext-enabled" id="fulltext-enabled" value="enabled"

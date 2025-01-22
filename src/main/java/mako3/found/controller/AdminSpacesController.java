@@ -44,6 +44,7 @@ public class AdminSpacesController {
     public String adminSpaces(Model model) {
         List<ChatSpace> spaceList = spaceService.listAllFresh();
         model.addAttribute("spaceList", spaceList);
+        model.addAttribute("spaceCount", spaceList.size());
         return "admin-spaces";
     }
 
@@ -53,7 +54,12 @@ public class AdminSpacesController {
             @RequestParam("filenameOfMessagesJson") String filenameOfMessagesJson,
             @RequestParam("filenameOfGroupInfoJson") String filenameOfGroupInfoJson) {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
+
+        long t1 = System.currentTimeMillis();
+        logger.info(String.format("Going to import json for space %s.", spaceId));
         messageImportService.importJson(spaceId, filenameOfMessagesJson, filenameOfGroupInfoJson, user.getUsername());
+        long t2 = System.currentTimeMillis();
+        logger.info(String.format("Succeeded to import json for space %s in %d msec.", spaceId, t2 - t1));
 
         return "string";
     }

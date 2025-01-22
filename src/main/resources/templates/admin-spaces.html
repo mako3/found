@@ -23,16 +23,10 @@
                     dataType: "html",
                     success: function (data) {
                         $('#' + spaceId + '-message-filename').val(data);
-                        console.log(data);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert("ERROR");
-                        alert(textStatus);
-                        alert(errorThrown);
                     }
                 });
-
-            console.log(spaceId);
         }
 
         function uploadGroupInfo(spaceId) {
@@ -51,34 +45,73 @@
                     dataType: "html",
                     success: function (data) {
                         $('#' + spaceId + '-group-filename').val(data);
-                        console.log(data);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert("ERROR");
-                        alert(textStatus);
-                        alert(errorThrown);
                     }
                 });
-
-            console.log(spaceId);
         }
 
-        function importJson(id) {
+        function importJson(spaceId) {
             const link = /*[[@{/importJson}]]*/'';
             $.ajax(
                 link,
                 {
                     type: 'get',
-                    data: { spaceId: id, filenameOfMessagesJson: $('#' + id + '-message-filename').val(), filenameOfGroupInfoJson: $('#' + id + '-group-filename').val() },
+                    data: { spaceId: spaceId, filenameOfMessagesJson: $('#' + spaceId + '-message-filename').val(), filenameOfGroupInfoJson: $('#' + spaceId + '-group-filename').val() },
                     dataType: "html",
                     success: function (data) {
-                        alert(data.message);
-                        console.log(data);
                     },
                     error: function (XMLHttpRequest, textStatus, errorThrown) {
-                        alert("ERROR");
                     }
                 });
+        }
+
+        function uploadImport(spaceId) {
+            var importButton = document.getElementById('import-trigger');
+            var cancelButton = document.getElementById('cancel-trigger');
+            var statusMessage = document.getElementById('upload-dialog-message');
+
+            importButton.disabled = false;
+            cancelButton.disabled = false;
+            cancelButton.textContent = 'キャンセル';
+            statusMessage.textContent = 'メッセージデータのインポートを実行します。';
+
+            var messageFile = document.getElementById(spaceId + '-message').files[0];
+            var groupFile = document.getElementById(spaceId + '-group').files[0];
+
+            if (messageFile == null || groupFile == null) {
+                statusMessage.textContent = 'ファイルが選択されていません。';
+                importButton.disabled = true;
+                cancelButton.textContent = '閉じる';
+                document.getElementById('upload-dialog').showModal();
+            } else {
+                importButton.onclick = function () {
+                    importButton.disabled = true;
+                    cancelButton.disabled = true;
+                    statusMessage.textContent = 'インポートを実行中です。';
+                    $.Deferred().resolve()
+                        .then(function () {
+                            uploadMessage(spaceId);
+                        })
+                        .then(function () {
+                            uploadGroupInfo(spaceId);
+                        })
+                        .then(function () {
+                            importJson(spaceId);
+                        })
+                        .done(function () {
+                            cancelButton.textContent = '閉じる';
+                            cancelButton.disabled = false;
+                            statusMessage.textContent = 'インポートが正常に完了しました。';
+                        })
+                        .fail(function () {
+                            importButton.disabled = false;
+                            cancelButton.disabled = false;
+                            statusMessage.textContent = 'インポートに失敗しました。';
+                        });
+                };
+                document.getElementById('upload-dialog').showModal();
+            }
         }
 
     </script>
@@ -87,20 +120,20 @@
 <body>
     <div layout:fragment="contents">
 
-        <h2>DB登録済みのスペース一覧</h2>
+        <h2>DB登録済みのスペース一覧 (<span th:text="${spaceCount}"></span>)</h2>
         <table border="1">
             <tr>
-                <th>spaceId</th>
-                <th>spaceName</th>
-                <th>accessState</th>
-                <th>memberCount</th>
-                <th>messageCount</th>
-                <th>imported</th>
-                <th>lastImportedUser</th>
-                <th>lastImportedDate</th>
+                <th width="60px">spaceId</th>
+                <th width="150px">spaceName</th>
+                <th width="60px">accessState</th>
+                <th width="90px">memberCount</th>
+                <th width="90px">messageCount</th>
+                <th width="60px">imported</th>
+                <th width="120px">lastImportedUser</th>
+                <th width="120px">lastImportedDate</th>
                 <th>messages.json</th>
                 <th>group_info.json</th>
-                <th>import</th>
+                <th width="120px">import</th>
             </tr>
             <tr th:each="space:${spaceList}">
                 <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">
@@ -116,20 +149,28 @@
                 <td><input type="file" th:id="${space.spaceId} + '-message'" class="json-uploader"
                         accept="messages.json"></input>
                     <input type="hidden" th:id="${space.spaceId} + '-message-filename'"></input>
-                    <button th:onclick="|uploadMessage('__${space.spaceId}__');|">アップロード</button>
                 </td>
                 <td><input type="file" th:id="${space.spaceId} + '-group'" class="json-uploader"
                         accept="group-info.json"></input>
                     <input type="hidden" th:id="${space.spaceId} + '-group-filename'"></input>
-                    <button th:onclick="|uploadGroupInfo('__${space.spaceId}__');|">アップロード</button>
                 </td>
                 <td>
-                    <button th:onclick="|importJson('__${space.spaceId}__');|">インポート</button>
+                    <button th:onclick="|uploadImport('__${space.spaceId}__');|">インポート</button>
                 </td>
             </tr>
         </table>
 
+        <dialog id="upload-dialog">
+            <header>メッセージデータのインポート</header>
+            <p id="upload-dialog-message"></p>
+            <button id="import-trigger">実行</button>
+            <button id="cancel-trigger" onclick="document.getElementById('upload-dialog').close()">キャンセル</button>
+        </dialog>
+
+
     </div>
+
+
 </body>
 
 </html>

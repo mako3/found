@@ -3,6 +3,7 @@ package mako3.found.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,14 @@ public class AdminFulltextController {
     private FulltextSettingsService fulltextService;
 
     @GetMapping("/admin/fulltext")
+    @PreAuthorize("hasRole('ADMIN')")
     public String adminFulltext(Model model) {
         model.addAttribute("fulltextEnabled", fulltextService.isFulltextEnabled() ? "enabled" : "disabled");
         return "admin-fulltext";
     }
 
     @PostMapping("/admin/updateFulltextSettings")
+    @PreAuthorize("hasRole('ADMIN')")
     public String updateFulltextSettings(@RequestParam("fulltext-enabled") String strEnabled, Model model) {
         boolean enabled = "enabled".equals(strEnabled);
         if (enabled != fulltextService.isFulltextEnabled()) {

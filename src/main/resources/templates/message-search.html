@@ -79,7 +79,6 @@
                 <th width="120px">spaceId</th>
                 <th width="120px">spaceName</th>
                 <th width="120px">messageId</th>
-                <th width="120px">topicId</th>
                 <th width="120px">creatorName</th>
                 <th width="120px">creatorEmail</th>
                 <th width="120px">createdDate</th>
@@ -92,7 +91,6 @@
                 <td><a
                         th:href="@{/{spaceId}/messages?dateFrom={createdDate}(spaceId=${message.spaceId},createdDate=${message.urlSafeCreatedDate})}"><span
                             th:text="${message.messageId}"></span></a></td>
-                <td><span th:text="${message.topicId}"></span></td>
                 <td><span th:text="${message.creatorName}"></span></td>
                 <td><span th:text="${message.creatorEmail}"></span></td>
                 <td><span th:text="${message.createdDate}"></span></td>

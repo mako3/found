@@ -36,15 +36,15 @@
 <body>
     <div layout:fragment="contents">
 
-        <h2>DB登録済みのユーザー一覧</h2>
+        <h2>DB登録済みのユーザー一覧 (<span th:text="${userCount}"></span>)</h2>
         <table border="1">
             <tr>
-                <th>username</th>
-                <th>role</th>
-                <th>email_for_notification</th>
-                <th>email_for_message_identity</th>
-                <th>last_login</th>
-                <th>reset password</th>
+                <th width="150px">username</th>
+                <th width="60px">role</th>
+                <th width="200px">email_for_notification</th>
+                <th width="200px">email_for_message_identity</th>
+                <th width="120px">last_login</th>
+                <th width="120px">reset password</th>
             </tr>
             <tr th:each="user:${userList}">
                 <td><span th:text="${user.username}"></span></td>

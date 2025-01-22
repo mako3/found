@@ -8,31 +8,39 @@
     <div layout:fragment="contents">
 
         <h1 th:text="${space.displayName}"></h1>
-        <h2>スペース情報</h2>
-        <table border="1">
-            <tr>
-                <th>spaceId</th>
-                <th>spaceName</th>
-                <th>accessState</th>
-                <th>memberCount</th>
-                <th>messageCount</th>
-                <th>imported</th>
-                <th>lastImportedUser</th>
-                <th>lastImportedDate</th>
-            </tr>
-            <tr>
-                <td><span th:text="${space.spaceId}"></span></td>
-                <td><span th:text="${space.displayName}"></span></td>
-                <td><span th:text="${space.accessState}"></span></td>
-                <td><span th:text="${space.memberCount}"></span></td>
-                <td><span th:text="${space.messageCount}"></span></td>
-                <td><span th:text="${space.imported}"></span></td>
-                <td><span th:text="${space.lastImportedUser}"></span></td>
-                <td><span th:text="${space.lastImportedDate}"></span></td>
-            </tr>
-        </table>
-        <h2>参加メンバー</h2>
-        <span th:text="${space.memberIds}"></span>
+
+
+        <div class="readmore">
+            <input id="readmore" type="checkbox">
+            <label for="readmore"></label>
+            <div class="readmore-content">
+                <h2>スペース情報</h2>
+                <table border="1">
+                    <tr>
+                        <th>spaceId</th>
+                        <th>spaceName</th>
+                        <th>accessState</th>
+                        <th>memberCount</th>
+                        <th>messageCount</th>
+                        <th>imported</th>
+                        <th>lastImportedUser</th>
+                        <th>lastImportedDate</th>
+                    </tr>
+                    <tr>
+                        <td><span th:text="${space.spaceId}"></span></td>
+                        <td><span th:text="${space.displayName}"></span></td>
+                        <td><span th:text="${space.accessState}"></span></td>
+                        <td><span th:text="${space.memberCount}"></span></td>
+                        <td><span th:text="${space.messageCount}"></span></td>
+                        <td><span th:text="${space.imported}"></span></td>
+                        <td><span th:text="${space.lastImportedUser}"></span></td>
+                        <td><span th:text="${space.lastImportedDate}"></span></td>
+                    </tr>
+                </table>
+                <h2>参加メンバー</h2>
+                <span th:text="${space.memberIds}"></span>
+            </div>
+        </div>
 
         <div class="header-pagenator">
             <h2>メッセージ一覧</h2>
@@ -47,7 +55,6 @@
             <tr>
                 <th width="30px"></th>
                 <th width="120px">messageId</th>
-                <th width="120px">topicId</th>
                 <th width="120px">creatorName</th>
                 <th width="120px">creatorEmail</th>
                 <th width="120px">createdDate</th>
@@ -63,7 +70,6 @@
                     </th:block>
                 </td>
                 <td><span th:text="${message.messageId}"></span></td>
-                <td><span th:text="${message.topicId}"></span></td>
                 <td><span th:text="${message.creatorName}"></span></td>
                 <td><span th:text="${message.creatorEmail}"></span></td>
                 <td><span th:text="${message.createdDate}"></span></td>

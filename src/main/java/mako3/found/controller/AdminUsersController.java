@@ -36,6 +36,7 @@ public class AdminUsersController {
     public String adminUsers(Model model) {
         List<CustomUserDetails> userList = userService.loadAllUsers();
         model.addAttribute("userList", userList);
+        model.addAttribute("userCount", userList.size());
         return "admin-users";
     }
 
