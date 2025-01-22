@@ -55,6 +55,7 @@ $ docker run \
   -e POSTGRES_USER=${POSTGRES_USER} \ 
   -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
   -e POSTGRES_DB=${POSTGRES_DB} \
+  -e CONTEXT_PATH=${CONTEXT_PATH}
   -d \
   ghcr.io/mako3/found:latest
 ```
@@ -68,6 +69,7 @@ Please replace placeholders.
 | ${POSTGRES_USER} | postgres_user |
 | ${POSTGRES_PASSWORD} |  admin |
 | ${POSTGRES_DB} |  postgres |
+| ${CONTEXT_PATH} | /found | 
 
 4. Open Web browser
 

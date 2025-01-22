@@ -30,7 +30,7 @@ spring:
             data-locations: classpath:/data.sql
 server:
     servlet:
-        context-path: /found
+        context-path: ${CONTEXT_PATH:/found}
     port: 8080
     session:
         timeout: 86400
