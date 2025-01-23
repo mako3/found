@@ -49,6 +49,7 @@ public class AdminSpacesController {
     }
 
     @GetMapping("/importJson")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseBody
     public String importJson(@CurrentSecurityContext SecurityContext context, @RequestParam("spaceId") String spaceId,
             @RequestParam("filenameOfMessagesJson") String filenameOfMessagesJson,
@@ -65,6 +66,7 @@ public class AdminSpacesController {
     }
 
     @PostMapping("/uploadMessagesJson")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseBody
     public String uploadMessagesJson(
             @RequestParam("file") MultipartFile file,
@@ -77,6 +79,7 @@ public class AdminSpacesController {
     }
 
     @PostMapping("/uploadGroupInfoJson")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseBody
     public String uploadGroupInfoJson(
             @RequestParam("file") MultipartFile file,

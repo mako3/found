@@ -3,6 +3,12 @@ Simple viewer of archived chat log specialized for Google Chat.
 
 ## Features 
 
+1. Message Search
+2. Space Search
+3. User Management
+4. Message Json Upload
+5. Role Management
+
 ## Run found with a Database Container
 
 > [!NOTE]
@@ -42,7 +48,7 @@ Please replace placeholders.
 
 > [!NOTE]
 > As for ParadeDB, please check https://docs.paradedb.com/documentation/getting-started/install for detail.
-> If you want to save storage data on host server, please specify '-v' option for data volume. 
+> If you want to save storage data on the host server, please specify '-v' option for data volume. 
 
 3. Start found
 
@@ -50,7 +56,7 @@ Please replace placeholders.
 $ docker run \
   --name found \
   --network ${NETWORK} \
-  -p 8080:8080 \
+  -p 80:8080 \
   -e POSTGRES_HOST=${POSTGRES_HOST} \ 
   -e POSTGRES_USER=${POSTGRES_USER} \ 
   -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
@@ -66,14 +72,14 @@ Please replace placeholders.
 |---|---|
 | ${NETWORK} | my_network |
 | ${DATASOURCE_HOST} | paradedb |
-| ${POSTGRES_USER} | postgres_user |
+| ${POSTGRES_USER} | postgres |
 | ${POSTGRES_PASSWORD} |  admin |
 | ${POSTGRES_DB} |  postgres |
 | ${CONTEXT_PATH} | /found | 
 
 4. Open Web browser
 
-> http://localhost:8080/found
+> http://localhost:80/found
 
 You can login with root/root. 
 
@@ -87,7 +93,7 @@ You can login with root/root.
 ## Build & Run found in your local PC
 
 > [!NOTE]
-> Required Java Version 17
+> Java 17 is required. Please insall JDK.
 
 
 1. Start a database (Paradedb) container

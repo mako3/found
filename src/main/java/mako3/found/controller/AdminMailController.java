@@ -30,11 +30,12 @@ public class AdminMailController {
     }
 
     @PostMapping("/admin/updateMailSettings")
+    @PreAuthorize("hasRole('ADMIN')")
     public String updateMailSettings(@Validated MailProperty mailProperty, BindingResult result, Model model) {
         if (!result.hasErrors()) {
             mailService.updateMailProperty(mailProperty);
         }
-        return "redirect:/admin-mail";
+        return "redirect:/admin/mail";
     }
 
 }

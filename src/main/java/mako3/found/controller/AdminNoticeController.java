@@ -28,9 +28,10 @@ public class AdminNoticeController {
     }
 
     @PostMapping("/admin/updateNotice")
+    @PreAuthorize("hasRole('ADMIN')")
     public String updateNotice(@RequestParam("notice") String notice, Model model) {
         noticeService.updateNotice(notice);
-        return "redirect:/admin-notice";
+        return "redirect:/admin/notice";
     }
 
 }
