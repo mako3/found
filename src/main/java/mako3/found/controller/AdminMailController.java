@@ -38,7 +38,9 @@ public class AdminMailController {
     @PreAuthorize("hasRole('ADMIN')")
     public String updateMailSettings(@Validated MailProperty mailProperty, BindingResult result,
             RedirectAttributes model) {
-        if (!result.hasErrors()) {
+        if (result.hasErrors()) {
+            model.addFlashAttribute("errorMessage", "入力規則に違反している箇所があります。");
+        } else {
             mailPropertyService.updateMailProperty(mailProperty);
             mailSenderService.init();
         }

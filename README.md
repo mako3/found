@@ -48,7 +48,6 @@ Please replace placeholders.
 
 > [!NOTE]
 > As for ParadeDB, please check https://docs.paradedb.com/documentation/getting-started/install for detail.
-> If you want to save storage data on the host server, please specify '-v' option for data volume. 
 
 3. Start found
 
@@ -119,7 +118,6 @@ Please replace placeholders.
 
 > [!NOTE]
 > As for ParadeDB, please check https://docs.paradedb.com/documentation/getting-started/install for detail.
-> If you want to save storage data on host server, please specify '-v' option for data volume. 
 
 2. Pull sourcode of found
 

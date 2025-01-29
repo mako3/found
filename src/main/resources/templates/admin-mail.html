@@ -8,6 +8,7 @@
     <div layout:fragment="contents">
 
         <h2>メール設定</h2>
+        <div th:if="${errorMessage != null}" th:text="${errorMessage}" class="alert" style="width:80%;"></div>
         <form th:action="@{/admin/updateMailSettings}" method="post" th:object="${mail}">
             <h3>SMTPサーバー設定</h3>
             <div>
