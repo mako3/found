@@ -64,12 +64,14 @@ public class AdminSpacesController {
             @RequestParam("filenameOfGroupInfoJson") String filenameOfGroupInfoJson) {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
 
-        long t1 = System.currentTimeMillis();
         logger.info(String.format("Going to import json for space %s.", spaceId));
 
         try {
+            long t1 = System.currentTimeMillis();
             messageImportService.importJson(spaceId, filenameOfMessagesJson, filenameOfGroupInfoJson,
                     user.getUsername());
+            long t2 = System.currentTimeMillis();
+            logger.info(String.format("Succeeded to import json for space %s in %d msec.", spaceId, t2 - t1));
         } catch (JsonException e) {
             logger.error(String.format("failed to import json for space %s", spaceId), e);
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -78,9 +80,7 @@ public class AdminSpacesController {
             return ResponseEntity.internalServerError().body("Jsonのインポートに失敗しました。");
         }
 
-        long t2 = System.currentTimeMillis();
-        logger.info(String.format("Succeeded to import json for space %s in %d msec.", spaceId, t2 - t1));
-        return ResponseEntity.ok(String.format("Succeeded to import json for space %s in %d msec.", spaceId, t2 - t1));
+        return ResponseEntity.ok(String.format("Succeeded to import json for space %s", spaceId));
     }
 
     @PostMapping("/admin/uploadMessagesJson")
@@ -130,13 +130,14 @@ public class AdminSpacesController {
     public ResponseEntity<String> addSpace(@CurrentSecurityContext SecurityContext context,
             @Validated NewSpace newSpace,
             BindingResult result, Model model) {
-
+        CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body("Invalid input.");
         }
 
         try {
             spaceService.addSpace(newSpace);
+            logger.info(String.format("succeeded to add space %s by %s", newSpace.getSpaceId(), user.getUsername()));
         } catch (DuplicateKeyException e) {
             logger.error(String.format("failed to add space %s for duplicate key", newSpace.getSpaceId()), e);
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Already exists.");
@@ -147,8 +148,11 @@ public class AdminSpacesController {
     @DeleteMapping("/admin/deleteSpace")
     @ResponseBody
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteSpace(@RequestParam("spaceId") String spaceId) {
+    public ResponseEntity<String> deleteSpace(@CurrentSecurityContext SecurityContext context,
+            @RequestParam("spaceId") String spaceId) {
+        CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
         spaceService.deleteSpace(spaceId);
+        logger.info(String.format("succeeded to delete space %s by %s", spaceId, user.getUsername()));
         return ResponseEntity.ok("success");
     }
 

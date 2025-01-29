@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import mako3.found.auth.CustomUserDetails;
 import mako3.found.auth.CustomUserDetailsService;
 import mako3.found.entity.NewUser;
-import mako3.found.mail.MailSendingException;
 
 @Controller
 public class AdminUsersController {
@@ -53,8 +52,9 @@ public class AdminUsersController {
         try {
             CustomUserDetails targetUser = (CustomUserDetails) userService.loadUserByUsername(username);
             userService.resetPasswordWithMail(username, targetUser.getEmailForNotification());
-        } catch (MailSendingException e) {
-            logger.error(String.format("failed to reset password for %s", username), e);
+            logger.info(String.format("succeeded to reset password for %s by %s", username, user.getUsername()));
+        } catch (Exception e) {
+            logger.error(String.format("failed to reset password for %s by %s", username, user.getUsername()), e);
             return ResponseEntity.internalServerError().build();
         }
         return ResponseEntity.ok("success");
@@ -65,6 +65,7 @@ public class AdminUsersController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> addUser(@CurrentSecurityContext SecurityContext context, @Validated NewUser newUser,
             BindingResult result, Model model) {
+        CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
 
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body("Invalid input.");
@@ -72,6 +73,7 @@ public class AdminUsersController {
 
         try {
             userService.addUser(newUser);
+            logger.info(String.format("succeeded to add user %s by %s", newUser.getUsername(), user.getUsername()));
         } catch (DuplicateKeyException e) {
             logger.error(String.format("failed to add user %s for duplicate key", newUser.getUsername()), e);
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -83,8 +85,11 @@ public class AdminUsersController {
     @DeleteMapping("/admin/deleteUser")
     @ResponseBody
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> deleteUser(@RequestParam("username") String username) {
+    public ResponseEntity<String> deleteUser(@CurrentSecurityContext SecurityContext context,
+            @RequestParam("username") String username) {
+        CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
         userService.deleteUser(username);
+        logger.info(String.format("succeeded to delete user %s by %s", username, user.getUsername()));
         return ResponseEntity.ok("success");
     }
 

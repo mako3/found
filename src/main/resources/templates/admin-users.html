@@ -18,7 +18,7 @@
                 processData: false,
                 contentType: false,
                 data: formData,
-                dataType: "html",
+                dataType: "html"
             }).done(function (e) {
                 resetButton.disabled = false;
                 resetButton.classList.add('sent');
@@ -96,7 +96,7 @@
                 <th>email for notification</th>
                 <th>email for message identity</th>
                 <th>last login</th>
-                <th>last password reset</th>
+                <th>last password update</th>
                 <th width="200px">send new password</th>
             </tr>
             <tr th:each="user:${userList}">
@@ -106,7 +106,7 @@
                 <td><span th:text="${user.emailForNotification}"></span></td>
                 <td><span th:text="${user.emailForMessageIdentity}"></span></td>
                 <td><span th:text="${user.lastLogin}"></span></td>
-                <td><span th:text="${user.lastPasswordReset}"></span></td>
+                <td><span th:text="${user.lastPasswordUpdate}"></span></td>
                 <td th:onclick="|resetPassword('__${user.username}__');|"><button th:id="${user.username} + '-reset'"
                         class="reset-button">Reset & Send</button></td>
             </tr>

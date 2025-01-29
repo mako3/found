@@ -20,12 +20,16 @@
                 <th>role</th>
                 <th>email for notification</th>
                 <th>email for message identity</th>
+                <th>last login</th>
+                <th>last password update</th>
             </tr>
             <tr th:each="user:${userList}">
                 <td><span th:text="${user.username}"></span></td>
                 <td><span th:text="${user.role}"></span></td>
                 <td><span th:text="${user.emailForNotification}"></span></td>
                 <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+                <td><span th:text="${user.lastLogin}"></span></td>
+                <td><span th:text="${user.lastPasswordUpdate}"></span></td>
             </tr>
         </table>
 

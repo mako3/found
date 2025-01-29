@@ -35,12 +35,12 @@ public class UserDao {
     }
 
     public void updateLastLogin(String username) {
-        jdbcTemplate.update("update found_users set last_login =  current_timestamp where username = ?", username);
+        jdbcTemplate.update("update found_users set last_login = current_timestamp where username = ?", username);
     }
 
     public void updatePassword(String username, String password) {
         jdbcTemplate.update(
-                "update found_users set password = ?, last_password_reset = current_timestamp where username = ?",
+                "update found_users set password = ?, last_password_update = current_timestamp where username = ?",
                 password, username);
     }
 
@@ -66,10 +66,10 @@ public class UserDao {
             String emailForNotification = rs.getString("email_for_notification");
             String emailForMessageIdentity = rs.getString("email_for_message_identity");
             LocalDateTime lastLogin = rs.getObject("last_login", LocalDateTime.class);
-            LocalDateTime lastPasswordReset = rs.getObject("last_password_reset", LocalDateTime.class);
+            LocalDateTime lastPasswordUpdate = rs.getObject("last_password_update", LocalDateTime.class);
 
             return new CustomUserDetails(password, username, role, emailForNotification, emailForMessageIdentity,
-                    lastLogin, lastPasswordReset);
+                    lastLogin, lastPasswordUpdate);
         }
     }
 }

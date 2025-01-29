@@ -2,6 +2,8 @@ package mako3.found.controller;
 
 import java.util.Optional;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,8 @@ import mako3.found.security.SecurityConfig;
  */
 @Controller
 public class SelftPasswordResetController {
+
+    private static Log logger = LogFactory.getLog(SelftPasswordResetController.class);
 
     @Autowired
     private CustomUserDetailsService userService;
@@ -79,6 +83,7 @@ public class SelftPasswordResetController {
             // do password update
             userService.updatePassword(resetToken.get().getUsername(), newPassword);
             userService.invalidateToken(token);
+            logger.info(String.format("succeeded to update password for %s", resetToken.get().getUsername()));
             return "redirect:/pw-reset/reset-completed";
         } else {
             return "redirect:/pw-reset/invalid-token";

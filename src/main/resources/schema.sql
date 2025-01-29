@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS found_users (
     password varchar(500) not null,
     role varchar(10) not null,
     last_login timestamp,
-    last_password_reset timestamp,
+    last_password_update timestamp,
     email_for_notification varchar(100),
     email_for_message_identity varchar(100),
     primary key (username)

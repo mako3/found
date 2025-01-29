@@ -11,7 +11,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
@@ -100,11 +99,6 @@ public class PasswordMailSenderService {
         } catch (Exception e) {
             throw new MailSendingException(String.format("failed to send a mail to %s", to), e);
         }
-    }
-
-    @Recover
-    public void sendMailRecover(MailSendingException e, String to, String username, String password) {
-        logger.error(String.format("failed to send a mail to %s after several rertys", to), e);
     }
 
 }
