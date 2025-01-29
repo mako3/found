@@ -14,7 +14,8 @@
 <body>
 
     <header>
-        <div class="nv-left" th:onclick="|location.href='@{/}'|"><span style="font-size:1.8em;">found</span></div>
+        <div class="nv-left" th:onclick="|location.href='@{/}'|" style="cursor:pointer;"><span
+                style="font-size:1.8em;">found</span></div>
         <div sec:authorize="isAuthenticated()" class="nv-right">
             <div><span sec:authentication="name"></span></div>
             <form th:action="@{/logout}" method="post">
@@ -24,7 +25,7 @@
     </header>
 
     <div style="display: flex; min-height: 100vh;">
-        <div style="min-width: 200px; padding: 10px 20px;">
+        <div style="min-width: 200px; padding: 10px 20px;" class="menu">
             <ul>
                 <li><a th:href="@{/}">ホーム</a></li>
                 <li><a th:href="@{/spaces}">スペースを探す</a></li>

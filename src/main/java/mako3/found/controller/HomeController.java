@@ -27,6 +27,7 @@ public class HomeController {
 		model.addAttribute("userList", Arrays.asList(user));
 		model.addAttribute("spaceList", list);
 		model.addAttribute("notice", noticeService.getNotice());
+		model.addAttribute("spaceCount", list.size());
 
 		return "home";
 	}

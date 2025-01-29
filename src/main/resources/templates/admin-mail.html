@@ -7,11 +7,12 @@
 <body>
     <div layout:fragment="contents">
 
-        <h2>パスワード通知メール設定</h2>
+        <h2>メール設定</h2>
         <form th:action="@{/admin/updateMailSettings}" method="post" th:object="${mail}">
+            <h3>SMTPサーバー設定</h3>
             <div>
                 <label for="smtpHost">SMTP Host</label>
-                <input type="text" id="smtpHost" name="smtpHost" th:value="*{smtpHost}" style="width:500px;" />
+                <input type="text" id="smtpHost" name="smtpHost" th:value="*{smtpHost}" style="width:600px;" />
             </div>
 
             <div>
@@ -36,15 +37,30 @@
                 <input type="text" id="mailFrom" name="mailFrom" th:value="*{mailFrom}" style="width:500px;" />
             </div>
 
+            <h3>パスワード通知メール</h3>
             <div>
-                <label for="mailSubject">Mail Subject</label>
-                <input type="text" id="mailSubject" name="mailSubject" th:value="*{mailSubject}" style="width:700px;" />
+                <label for="mailSubject1">Mail Subject</label>
+                <input type="text" id="mailSubject1" name="mailSubject1" th:value="*{mailSubject1}"
+                    style="width:700px;" />
             </div>
 
             <div>
-                <label for="mailBodyTemplate">Mail Body</label>
-                <textarea id="mailBodyTemplate" name="mailBodyTemplate" th:text="*{mailBodyTemplate}"></textarea>
+                <label for="mailBodyTemplate1">Mail Body</label>
+                <textarea id="mailBodyTemplate1" name="mailBodyTemplate1" th:text="*{mailBodyTemplate1}"></textarea>
             </div>
+
+            <h3>リセットトークン通知メール</h3>
+            <div>
+                <label for="mailSubject2">Mail Subject</label>
+                <input type="text" id="mailSubject2" name="mailSubject2" th:value="*{mailSubject2}"
+                    style="width:700px;" />
+            </div>
+
+            <div>
+                <label for="mailBodyTemplate2">Mail Body</label>
+                <textarea id="mailBodyTemplate2" name="mailBodyTemplate2" th:text="*{mailBodyTemplate2}"></textarea>
+            </div>
+
 
             <input type="submit" value="更新" />
         </form>

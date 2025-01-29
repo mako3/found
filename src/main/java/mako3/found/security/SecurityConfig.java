@@ -28,7 +28,7 @@ public class SecurityConfig {
                 http.authorizeHttpRequests(
                                 authorize -> authorize
                                                 .requestMatchers("/css/**", "/login", "/favicon.ico",
-                                                                "/self-password-reset")
+                                                                "/pw-reset/*")
                                                 .permitAll()
                                                 .anyRequest()
                                                 .authenticated())
@@ -45,7 +45,7 @@ public class SecurityConfig {
                                                 .deleteCookies("JSESSIONID"))
                                 .exceptionHandling(exception -> exception
                                                 .accessDeniedPage("/display-access-denied"))
-                                .csrf(configureator -> configureator.ignoringRequestMatchers("/*"));
+                                .csrf(configureator -> configureator.ignoringRequestMatchers("/**"));
 
                 return http.build();
         }

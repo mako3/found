@@ -112,11 +112,29 @@ tbody tr:nth-child(even) {
     padding: .75rem 1.25rem;
 }
 
-ul {
+.success {
+    background-color: #d1e7dd;
+    border-color: #a3cfbb;
+    color: #0a3622;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    padding: .75rem 1.25rem;
+}
+
+.warn {
+    background-color: #fff3cd;
+    border-color: #ffe69c;
+    color: #664d03;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    padding: .75rem 1.25rem;
+}
+
+.menu ul {
     padding-inline-start: 10px;
 }
 
-li {
+.menu li {
     list-style: none;
 }
 
@@ -190,4 +208,8 @@ li {
     border-radius: 6px;
     outline: none;
     width: fit-content;
+}
+
+.reset-button.sent::after {
+    content: "✅";
 }

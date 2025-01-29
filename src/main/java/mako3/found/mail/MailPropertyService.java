@@ -20,8 +20,10 @@ public class MailPropertyService {
         String smtpPort = keyValueDao.getValue("mail.port");
         String smtpUsername = keyValueDao.getValue("mail.username");
         String smtpPassword = keyValueDao.getValue("mail.password");
-        String mailSubject = keyValueDao.getValue("mail.subject");
-        String mailBodyTemplate = keyValueDao.getValue("mail.body");
+        String mailSubject1 = keyValueDao.getValue("mail.subject1");
+        String mailBodyTemplate1 = keyValueDao.getValue("mail.body1");
+        String mailSubject2 = keyValueDao.getValue("mail.subject2");
+        String mailBodyTemplate2 = keyValueDao.getValue("mail.body2");
         String mailFrom = keyValueDao.getValue("mail.from");
 
         return MailProperty.builder()
@@ -29,8 +31,10 @@ public class MailPropertyService {
                 .smtpPort(smtpPort != null ? Integer.parseInt(smtpPort) : 0)
                 .smtpUsername(smtpUsername)
                 .smtpPassword(smtpPassword)
-                .mailSubject(mailSubject)
-                .mailBodyTemplate(mailBodyTemplate)
+                .mailSubject1(mailSubject1)
+                .mailBodyTemplate1(mailBodyTemplate1)
+                .mailSubject2(mailSubject2)
+                .mailBodyTemplate2(mailBodyTemplate2)
                 .mailFrom(mailFrom)
                 .build();
 
@@ -43,8 +47,10 @@ public class MailPropertyService {
         keyValueDao.updateValue("mail.port", String.valueOf(prop.getSmtpPort()));
         keyValueDao.updateValue("mail.username", prop.getSmtpUsername());
         keyValueDao.updateValue("mail.password", prop.getSmtpPassword());
-        keyValueDao.updateValue("mail.subject", prop.getMailSubject());
-        keyValueDao.updateValue("mail.body", prop.getMailBodyTemplate());
+        keyValueDao.updateValue("mail.subject1", prop.getMailSubject1());
+        keyValueDao.updateValue("mail.body1", prop.getMailBodyTemplate1());
+        keyValueDao.updateValue("mail.subject2", prop.getMailSubject2());
+        keyValueDao.updateValue("mail.body2", prop.getMailBodyTemplate2());
         keyValueDao.updateValue("mail.from", prop.getMailFrom());
 
     }

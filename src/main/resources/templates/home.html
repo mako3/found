@@ -18,8 +18,8 @@
             <tr>
                 <th>username</th>
                 <th>role</th>
-                <th>email_for_notification</th>
-                <th>email_for_message_identity</th>
+                <th>email for notification</th>
+                <th>email for message identity</th>
             </tr>
             <tr th:each="user:${userList}">
                 <td><span th:text="${user.username}"></span></td>
@@ -29,16 +29,16 @@
             </tr>
         </table>
 
-        <h2>あなたが参加していたスペース</h2>
+        <h2>あなたが参加していたスペース (<span th:text="${spaceCount}"></span>)</h2>
         <table border="1">
             <tr>
-                <th>spaceId</th>
-                <th>spaceName</th>
-                <th>accessState</th>
-                <th>memberCount</th>
-                <th>messageCount</th>
-                <th>lastImportedUser</th>
-                <th>lastImportedDate</th>
+                <th>space id</th>
+                <th>space name</th>
+                <th>access state</th>
+                <th>member count</th>
+                <th>message count</th>
+                <th>last imported user</th>
+                <th>last imported date</th>
             </tr>
             <tr th:each="space:${spaceList}">
                 <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">

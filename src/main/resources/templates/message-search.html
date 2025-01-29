@@ -49,7 +49,7 @@
                 <input type="date" id="end-date" th:value="${endDate}"></input>
             </div>
             <div>
-                <span style="padding:10px;width:200px">メッセージ投稿者</span>
+                <span style="padding:10px;width:200px">メッセージ投稿者 (email)</span>
                 <input type="text" id="creatorEmail" th:value="${creatorEmail}" size="30"></input>
             </div>
             <div style="display:flex;">
@@ -64,8 +64,8 @@
                             th:checked="${queryScope} eq 'DISCOVERABLE'" />DISCOVERABLEなスペース全体(参加していないスペースを含む)
                     </label>
                     <label class="radio">
-                        <input type="radio" name="q1" value="SPACE" th:checked="${queryScope} eq 'SPACE'" />特定スペース<input
-                            type="text" id="spaceId" th:value="${spaceId}" size="30">
+                        <input type="radio" name="q1" value="SPACE" th:checked="${queryScope} eq 'SPACE'" />特定スペース
+                        (space id)<input type="text" id="spaceId" th:value="${spaceId}" size="30">
                     </label>
                 </div>
 
@@ -73,16 +73,17 @@
             <input type="button" value="検索" onclick="search();">
         </div>
 
-        <h3>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h3>
+        <h3>検索結果 <span th:if="${resultCount != null}" th:text="${resultCount}"></span>件 <span
+                th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h3>
         <table border="1">
             <tr>
-                <th width="120px">spaceId</th>
-                <th width="120px">spaceName</th>
-                <th width="120px">messageId</th>
-                <th width="120px">creatorName</th>
-                <th width="120px">creatorEmail</th>
-                <th width="120px">createdDate</th>
-                <th>messageText</th>
+                <th width="120px">space id</th>
+                <th width="120px">space name</th>
+                <th width="120px">message id</th>
+                <th width="120px">creator name</th>
+                <th width="120px">creator email</th>
+                <th width="120px">created date</th>
+                <th>message text</th>
             </tr>
             <tr th:each="message:${messageList}">
                 <td><a th:href="@{/{spaceId}/messages(spaceId=${message.spaceId})}"><span

@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mako3.found.service.NoticeService;
 
@@ -29,7 +30,7 @@ public class AdminNoticeController {
 
     @PostMapping("/admin/updateNotice")
     @PreAuthorize("hasRole('ADMIN')")
-    public String updateNotice(@RequestParam("notice") String notice, Model model) {
+    public String updateNotice(@RequestParam("notice") String notice, RedirectAttributes model) {
         noticeService.updateNotice(notice);
         return "redirect:/admin/notice";
     }

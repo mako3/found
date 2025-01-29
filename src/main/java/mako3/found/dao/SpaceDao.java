@@ -74,6 +74,17 @@ public class SpaceDao {
                 messageCount, spaceId);
     }
 
+    public void insertSpace(String spaceId, String displayName, String accessState) {
+        jdbcTemplate.update(
+                "insert into found_spaces (space_id, display_name, access_state, member_ids) values (?, ?, ?, '{}')",
+                spaceId,
+                displayName, accessState);
+    }
+
+    public void deleteSpace(String spaceId) {
+        jdbcTemplate.update("delete from found_spaces where space_id = ?", spaceId);
+    }
+
     public class JdbcRowMapper implements RowMapper<ChatSpace> {
 
         @Override

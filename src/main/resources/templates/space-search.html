@@ -45,14 +45,13 @@
         <h3>検索結果 <span th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h3>
         <table border="1">
             <tr>
-                <th>spaceId</th>
-                <th>spaceName</th>
-                <th>accessState</th>
-                <th>memberCount</th>
-                <th>messageCount</th>
-                <th>imported</th>
-                <th>lastImportedUser</th>
-                <th>lastImportedDate</th>
+                <th>space id</th>
+                <th>space name</th>
+                <th>access state</th>
+                <th>member count</th>
+                <th>message count</th>
+                <th>last imported user</th>
+                <th>last imported date</th>
             </tr>
             <tr th:each="space:${spaceList}">
                 <td><a th:href="@{/{space.spaceId}/messages(space.spaceId=${space.spaceId})}">
@@ -61,7 +60,6 @@
                 <td><span th:text="${space.accessState}"></span></td>
                 <td><span th:text="${space.memberCount}"></span></td>
                 <td><span th:text="${space.messageCount}"></span></td>
-                <td><span th:text="${space.imported}"></span></td>
                 <td><span th:text="${space.lastImportedUser}"></span></td>
                 <td><span th:text="${space.lastImportedDate}"></span></td>
             </tr>

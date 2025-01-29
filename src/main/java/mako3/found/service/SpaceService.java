@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 
 import mako3.found.auth.CustomUserDetails;
 import mako3.found.dao.SpaceDao;
 import mako3.found.entity.ChatSpace;
+import mako3.found.entity.NewSpace;
 import mako3.found.entity.SpaceQuery;
 
 @Component
@@ -50,12 +52,12 @@ public class SpaceService {
         return spaceDao.findAll();
     }
 
-    @Cacheable("space-list")
+    @Cacheable(cacheNames = "space-list")
     public List<ChatSpace> listAllCached() {
         return spaceDao.findAll();
     }
 
-    @Cacheable("space-one")
+    @Cacheable(cacheNames = "space-one", key = "#spaceId")
     public ChatSpace getOneCached(String spaceId) {
         return spaceDao.findOne(spaceId);
     }
@@ -86,6 +88,21 @@ public class SpaceService {
     })
     public void updateMessageCount(String spaceId, int messageCount) {
         spaceDao.updateMessageCount(spaceId, messageCount);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "space-list", allEntries = true)
+    })
+    public void addSpace(NewSpace newSpace) throws DuplicateKeyException {
+        spaceDao.insertSpace(newSpace.getSpaceId(), newSpace.getSpaceName(), newSpace.getAccessState());
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "space-one", key = "#spaceId"),
+            @CacheEvict(value = "space-list", allEntries = true)
+    })
+    public void deleteSpace(String spaceId) {
+        spaceDao.deleteSpace(spaceId);
     }
 
 }

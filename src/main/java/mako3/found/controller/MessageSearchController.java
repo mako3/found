@@ -52,11 +52,16 @@ public class MessageSearchController {
                     .endDate(endDate)
                     .queryScope(QueryScope.valueOf(queryScope))
                     .creatorEmail(creatorEmail)
-                    .limit(limit)
+                    .limit(limit + 1)
                     .build();
 
             long t1 = System.currentTimeMillis();
             List<ChatMessage> messages = service.find(user, query);
+            if (messages.size() > limit) {
+                messages.remove(limit);
+                model.addAttribute("resultCount", limit + "+");
+            }
+
             long t2 = System.currentTimeMillis();
             model.addAttribute("queryTime", t2 - t1);
             model.addAttribute("messageList", messages);

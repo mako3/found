@@ -28,6 +28,7 @@ spring:
             mode: always
             schema-locations: classpath:/schema.sql
             data-locations: classpath:/data.sql
+            encoding: UTF-8
 server:
     servlet:
         context-path: ${CONTEXT_PATH:/found}

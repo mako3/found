@@ -38,7 +38,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
         String userName = authentication.getName();
         userService.updateLastLogin(userName);
 
-        logger.info(String.format("login succeeded by %s", userName));
+        logger.info(String.format("login succeeded by %s, redirect into %s", userName, targetUrl));
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 

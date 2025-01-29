@@ -13,14 +13,12 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
 import org.springframework.retry.annotation.Retryable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.StringTemplateResolver;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 @Component
@@ -48,43 +46,65 @@ public class PasswordMailSenderService {
         logger.info(String.format("smtp host has been overrided into %s", prop.getSmtpHost()));
     }
 
-    @Async
     @Retryable(retryFor = {
-            MailSendingException.class }, maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 2))
-    public void sendMail(String to, String username, String password) {
+            MailSendingException.class }, maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 2), recover = "sendMailRecover")
+    public void sendPasswordMail(String to, String username, String password) throws MailSendingException {
         MailProperty prop = mailPropertyService.getMailProperty();
 
-        // I know there is a better way to do this, but I don't want to spend time on it.
         final SpringTemplateEngine engine = new SpringTemplateEngine();
         engine.setTemplateResolver(new StringTemplateResolver());
 
+        // construct mail body
         final Map<String, Object> variables = new HashMap<>();
         variables.put("username", username);
         variables.put("password", password);
-
         final Context context = new Context();
         context.setVariables(variables);
-        final String textBody = engine.process(prop.getMailBodyTemplate(), context);
+        final String textBody = engine.process(prop.getMailBodyTemplate1(), context);
 
+        // actually send a mail
+        doSend(prop.getMailFrom(), to, prop.getMailSubject1(), textBody);
+    }
+
+    @Retryable(retryFor = {
+            MailSendingException.class }, maxAttempts = 3, backoff = @Backoff(delay = 1000, multiplier = 2))
+    public void sendResetTokenMail(String to, String token) {
+        MailProperty prop = mailPropertyService.getMailProperty();
+
+        final SpringTemplateEngine engine = new SpringTemplateEngine();
+        engine.setTemplateResolver(new StringTemplateResolver());
+
+        // construct mail body
+        final Map<String, Object> variables = new HashMap<>();
+        variables.put("token", token);
+        final Context context = new Context();
+        context.setVariables(variables);
+        final String textBody = engine.process(prop.getMailBodyTemplate2(), context);
+
+        // actually send a mail
+        doSend(prop.getMailFrom(), to, prop.getMailSubject2(), textBody);
+    }
+
+    private void doSend(String from, String to, String subject, String textBody) throws MailSendingException {
         try {
+            // actually send a mail
             final MimeMessage mimeMessage = mailSender.createMimeMessage();
             final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, StandardCharsets.UTF_8.name());
-            helper.setFrom(prop.getMailFrom());
+            helper.setFrom(from);
             helper.setTo(to);
-            helper.setSubject(prop.getMailSubject());
+            helper.setSubject(subject);
             helper.setText(textBody);
 
             this.mailSender.send(mimeMessage);
             logger.info(String.format("succeeded to send a mail to %s", to));
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             throw new MailSendingException(String.format("failed to send a mail to %s", to), e);
         }
-
     }
 
     @Recover
     public void sendMailRecover(MailSendingException e, String to, String username, String password) {
-        logger.error(String.format("failed to send a mail to %s", to), e);
+        logger.error(String.format("failed to send a mail to %s after several rertys", to), e);
     }
 
 }

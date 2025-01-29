@@ -81,7 +81,7 @@ Please replace placeholders.
 
 > http://localhost:80/found
 
-You can login with root/root. 
+You can login with root/admin. 
 
 
 ## Stop / Restart
@@ -157,4 +157,4 @@ $ java -jar target/found-0.0.1-SNAPSHOT.jar
 
 > http://localhost:8080/found
 
-You can login with root/root. 
+You can login with root/admin. 

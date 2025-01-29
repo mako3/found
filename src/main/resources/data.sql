@@ -1,6 +1,8 @@
-INSERT INTO found_users (username, password, role) VALUES ('root', 'admin', 'ADMIN') ON CONFLICT DO NOTHING;
-INSERT INTO found_keyvalue (key, value) VALUES ('mail.subject', '[found] New Account') ON CONFLICT DO NOTHING;
-INSERT INTO found_keyvalue (key, value) VALUES ('mail.body', 'ようこそ') ON CONFLICT DO NOTHING;
+INSERT INTO found_users (username, password, role) VALUES ('root', '{noop}admin', 'ADMIN') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.subject1', '[found] ログイン情報のお知らせ') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.body1', E'過去チャット検索システム(found)のログイン情報をお知らせします。\nユーザー名 [[${username}]]\nパスワード [[${password}]]') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.subject2', '[found] トークンのお知らせ') ON CONFLICT DO NOTHING;
+INSERT INTO found_keyvalue (key, value) VALUES ('mail.body2', E'下記URLからパスワードをリセットしてください。\n/pw-reset/open-link?token=[[${token}]]\nトークンの有効期限は24時間です。') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.username', '') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.password', '') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.from', '') ON CONFLICT DO NOTHING;

@@ -37,19 +37,15 @@ public class MessageImportService {
 
     @Transactional
     public void importJson(String spaceId, String filenameOfMessagesJson, String filenamesOfGroupInfoJson,
-            String executorName) {
+            String executorName) throws JsonException {
         ChatSpace space = spaceService.getOne(spaceId);
         File fileMessagesJson = storageService.load(filenameOfMessagesJson).toFile();
         File fileGroupInfoJson = storageService.load(filenamesOfGroupInfoJson).toFile();
 
-        try {
-            importMessages(space, fileMessagesJson);
-            importGroupInfo(space, fileGroupInfoJson);
+        importMessages(space, fileMessagesJson);
+        importGroupInfo(space, fileGroupInfoJson);
 
-            spaceService.updateLastImported(space.getSpaceId(), executorName);
-        } catch (JsonException e) {
-            e.printStackTrace();
-        }
+        spaceService.updateLastImported(space.getSpaceId(), executorName);
     }
 
     private void importMessages(ChatSpace space, File fileMessagesJson) throws JsonException {
