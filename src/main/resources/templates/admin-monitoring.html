@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+
+<head>
+</head>
+
+<body>
+    <div layout:fragment="contents">
+
+        <h2>モニタリング設定</h2>
+        <p>ここで設定したスニペットは、すべての画面(ログイン画面を除く)にスクリプトタグとして埋め込まれます。</p>
+        <form th:action="@{/admin/updateSnippet}" method="post">
+            <label for="snippet">snippet</label>
+            <textarea id="snippet" name="snippet" th:text="${snippet}" style="height:400px;"></textarea>
+            <input type="submit" value="更新" />
+        </form>
+
+    </div>
+</body>
+
+</html>

@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="icon" th:href="@{/favicon.ico}" />
     <link th:href="@{/css/gchat.css}" rel="stylesheet" />
+    <script th:if="${monitoringsnippet} != null" th:inline="javascript">
+        /*[(${monitoringsnippet})]*/
+    </script>
 </head>
 
 <body>
@@ -39,6 +42,7 @@
                     <li><a th:href="@{/admin/notice}">お知らせ設定</a></li>
                     <li><a th:href="@{/admin/mail}">メール設定</a></li>
                     <li><a th:href="@{/admin/fulltext}">全文検索設定</a></li>
+                    <li><a th:href="@{/admin/monitoring}">モニタリング設定</a></li>
                 </ul>
             </div>
 
