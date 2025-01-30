@@ -156,3 +156,16 @@ $ java -jar target/found-0.0.1-SNAPSHOT.jar
 > http://localhost:8080/found
 
 You can login with root/admin. 
+
+## License
+
+This project is licensed under the MIT License.
+
+This project uses the following third-party libraries:
+
+- [Spring Framework](https://spring.io/projects/spring-framework), licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [Thyemeleaf](https://www.thymeleaf.org/),  licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [Lombok](https://projectlombok.org/), llicensed under the [MIT License](https://opensource.org/license/mit)
+- [Jackson](https://github.com/FasterXML/jackson-core), licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [maven](https://github.com/apache/maven), licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [PostgreSQL JDBC Driver](https://jdbc.postgresql.org/), licensed under the [2-Clause BSD License](https://opensource.org/license/BSD-2-Clause)
