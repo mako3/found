@@ -29,12 +29,12 @@ spring:
             schema-locations: classpath:/schema.sql
             data-locations: classpath:/data.sql
             encoding: UTF-8
+    session:
+        timeout: 86400
 server:
     servlet:
         context-path: ${CONTEXT_PATH:/found}
     port: 8080
-    session:
-        timeout: 86400
 
 logging:
     level:
