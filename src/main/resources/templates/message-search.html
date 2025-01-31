@@ -73,8 +73,8 @@
             <input type="button" value="検索" onclick="search();">
         </div>
 
-        <h3>検索結果 <span th:if="${resultCount != null}" th:text="${resultCount}"></span>件 <span
-                th:if="${queryTime != null}" th:text="${queryTime} + 'ミリ秒'"></span></h3>
+        <h3>検索結果 <span th:if="${resultCount != null}" th:text="|${resultCount}件|"></span> <span
+                th:if="${queryTime != null}" th:text="|(${queryTime}ミリ秒)|"></span></h3>
         <table border="1">
             <tr>
                 <th width="120px">space id</th>
@@ -94,7 +94,7 @@
                             th:text="${message.messageId}"></span></a></td>
                 <td><span th:text="${message.creatorName}"></span></td>
                 <td><span th:text="${message.creatorEmail}"></span></td>
-                <td><span th:text="${message.createdDate}"></span></td>
+                <td><span th:text="${#temporals.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td><span th:utext="${message.messageText}"></span></td>
             </tr>
         </table>

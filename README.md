@@ -1,5 +1,5 @@
 # found
-Simple viewer of archived chat log specialized for Google Chat.
+Simple viewer of archived chat log specialized for Google Chat. 
 
 ## Features 
 

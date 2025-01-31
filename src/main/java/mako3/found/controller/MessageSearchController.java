@@ -57,12 +57,15 @@ public class MessageSearchController {
 
             long t1 = System.currentTimeMillis();
             List<ChatMessage> messages = service.find(user, query);
+            long t2 = System.currentTimeMillis();
+
             if (messages.size() > limit) {
                 messages.remove(limit);
                 model.addAttribute("resultCount", limit + "+");
+            } else {
+                model.addAttribute("resultCount", messages.size());
             }
 
-            long t2 = System.currentTimeMillis();
             model.addAttribute("queryTime", t2 - t1);
             model.addAttribute("messageList", messages);
             model.addAttribute("queryType", query.getQueryType().toString());

@@ -32,7 +32,8 @@
                         <td><span th:text="${space.memberCount}"></span></td>
                         <td><span th:text="${space.messageCount}"></span></td>
                         <td><span th:text="${space.lastImportedUser}"></span></td>
-                        <td><span th:text="${space.lastImportedDate}"></span></td>
+                        <td><span th:text="${#temporals.format(space.lastImportedDate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                        </td>
                     </tr>
                 </table>
                 <h2>参加メンバー</h2>
@@ -70,7 +71,7 @@
                 <td><span th:text="${message.messageId}"></span></td>
                 <td><span th:text="${message.creatorName}"></span></td>
                 <td><span th:text="${message.creatorEmail}"></span></td>
-                <td><span th:text="${message.createdDate}"></span></td>
+                <td><span th:text="${#temporals.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td><span th:text="${message.messageText}"></span></td>
             </tr>
         </table>

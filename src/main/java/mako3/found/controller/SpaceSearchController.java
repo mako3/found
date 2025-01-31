@@ -39,6 +39,7 @@ public class SpaceSearchController {
             List<ChatSpace> list = service.findByQuery(user, query);
             long t2 = System.currentTimeMillis();
 
+            model.addAttribute("resultCount", list.size());
             model.addAttribute("keyword", displayName);
             model.addAttribute("queryScope", query.getQueryScope().toString());
             model.addAttribute("spaceList", list);
