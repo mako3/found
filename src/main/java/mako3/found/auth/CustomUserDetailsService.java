@@ -108,10 +108,15 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new PasswordPolicyViolationException("文字数が不足しています。");
         }
 
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encodedPassword = "{bcrypt}" + encoder.encode(newPassword);
+        String encodedPassword = encodePassword(newPassword);
         userDao.updatePassword(username, encodedPassword, forceChangePassword);
         logger.info(String.format("succeeded to update password for %s", username));
+    }
+
+    private String encodePassword(String rawPassword) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String encodedPassword = "{bcrypt}" + encoder.encode(rawPassword);
+        return encodedPassword;
     }
 
     private String generateRandom(int length) {
@@ -126,8 +131,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public void addUser(NewUser newUser) throws DuplicateKeyException {
-        String password = generateRandom(DEFAULT_PASSWORD_LENGTH);
-        userDao.insertUser(newUser.getUsername(), password, newUser.getRole(), newUser.getEmailForNotification(),
+        String encodedPassword = encodePassword(generateRandom(DEFAULT_PASSWORD_LENGTH));
+        userDao.insertUser(newUser.getUsername(), encodedPassword, newUser.getRole(), newUser.getEmailForNotification(),
                 newUser.getEmailForMessageIdentity());
     }
 
