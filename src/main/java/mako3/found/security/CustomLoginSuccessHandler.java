@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import mako3.found.auth.CustomUserDetails;
 import mako3.found.auth.CustomUserDetailsService;
 
 @Component
@@ -32,13 +33,20 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
+        CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+        userService.updateLastLogin(user.getUsername());
+
         SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
-        String targetUrl = savedRequest != null ? savedRequest.getRedirectUrl() : "/";
+        String targetUrl;
+        if (user.forceChangePassowrd()) {
+            targetUrl = "/user/password/change";
+        } else if (savedRequest != null) {
+            targetUrl = savedRequest.getRedirectUrl();
+        } else {
+            targetUrl = "/";
+        }
 
-        String userName = authentication.getName();
-        userService.updateLastLogin(userName);
-
-        logger.info(String.format("login succeeded by %s, redirect into %s", userName, targetUrl));
+        logger.info(String.format("login succeeded by %s, redirect into %s", user.getUsername(), targetUrl));
         redirectStrategy.sendRedirect(request, response, targetUrl);
     }
 

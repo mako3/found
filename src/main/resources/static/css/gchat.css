@@ -109,7 +109,7 @@ tbody tr:nth-child(even) {
     color: #721c24;
     border-radius: 6px;
     border: 1px solid transparent;
-    padding: .75rem 1.25rem;
+    padding: .3rem 10px;
 }
 
 .success {
@@ -118,7 +118,7 @@ tbody tr:nth-child(even) {
     color: #0a3622;
     border-radius: 6px;
     border: 1px solid transparent;
-    padding: .75rem 1.25rem;
+    padding: .3rem 10px;
 }
 
 .warn {
@@ -127,7 +127,7 @@ tbody tr:nth-child(even) {
     color: #664d03;
     border-radius: 6px;
     border: 1px solid transparent;
-    padding: .75rem 1.25rem;
+    padding: .3rem 10px;
 }
 
 .menu ul {
@@ -210,6 +210,37 @@ tbody tr:nth-child(even) {
     width: fit-content;
 }
 
-.reset-button.sent::after {
+li.sent::after {
     content: "✅";
+}
+
+li.sent-failure::after {
+    content: "❌";
+}
+
+.file_label {
+    display: block;
+    text-align: center;
+    background-color: #f7f7f7;
+    font-size: inherit;
+    padding: 10px 10px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    border-radius: 6px;
+}
+
+.file_label:hover {
+    background-color: white;
+}
+
+input[type=file] {
+    display: none;
+}
+
+.file_none {
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+    margin-top: 1em;
+    word-break: break-all;
 }

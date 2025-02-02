@@ -1,4 +1,4 @@
-package mako3.found.controller;
+package mako3.found.controller.advise;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;

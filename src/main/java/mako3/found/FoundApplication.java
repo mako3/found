@@ -1,5 +1,7 @@
 package mako3.found;
 
+import java.util.TimeZone;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -20,6 +22,7 @@ public class FoundApplication {
 	private static Log logger = LogFactory.getLog(FoundApplication.class);
 
 	public static void main(String[] args) {
+		TimeZone.setDefault(TimeZone.getTimeZone("GMT+09:00"));
 		SpringApplication.run(FoundApplication.class, args);
 	}
 

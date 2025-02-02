@@ -6,7 +6,7 @@ Simple viewer of archived chat log specialized for Google Chat.
 1. Message Search
 2. Space Search
 3. User Management
-4. Message Json Upload
+4. Message/Group Json Upload
 5. Role Management
 
 ## Run found with a Database Container
@@ -20,7 +20,7 @@ Simple viewer of archived chat log specialized for Google Chat.
 $ docker network create ${NETWORK}
 ```
 
-Please replace ${NETWORK} like 'my_network'. 
+Please replace ${NETWORK} like 'my_network' so that AP container can access to DB container. 
 
 2. Start a database (Paradedb) container
 
@@ -47,7 +47,7 @@ Please replace placeholders.
 | ${POSTGRES_DB} | postgres | 
 
 > [!NOTE]
-> As for ParadeDB, please check https://docs.paradedb.com/documentation/getting-started/install for detail.
+> Please check https://docs.paradedb.com/documentation/getting-started/install for more details of ParadeDB.
 
 3. Start found
 
@@ -60,21 +60,23 @@ $ docker run \
   -e POSTGRES_USER=${POSTGRES_USER} \ 
   -e POSTGRES_PASSWORD=${POSTGRES_PASSWORD} \
   -e POSTGRES_DB=${POSTGRES_DB} \
-  -e CONTEXT_PATH=${CONTEXT_PATH}
+  -e CONTEXT_PATH=${CONTEXT_PATH} \
+  -e SESSION_TIMEOUT=${SESSION_TIMEOUT} \
   -d \
   ghcr.io/mako3/found:latest
 ```
 
 Please replace placeholders. 
 
-| Placeholder | Example |
-|---|---|
-| ${NETWORK} | my_network |
-| ${DATASOURCE_HOST} | paradedb |
-| ${POSTGRES_USER} | postgres |
-| ${POSTGRES_PASSWORD} |  admin |
-| ${POSTGRES_DB} |  postgres |
-| ${CONTEXT_PATH} | /found | 
+| Placeholder | Example | Default | 
+|---|---|---|
+| ${NETWORK} | my_network ||
+| ${DATASOURCE_HOST} | paradedb ||
+| ${POSTGRES_USER} | postgres ||
+| ${POSTGRES_PASSWORD} |  admin ||
+| ${POSTGRES_DB} |  postgres ||
+| ${CONTEXT_PATH} | /found | /found |
+| ${SESSION_TIMOUET} | 86400 | 86400 | 
 
 4. Open Web browser
 
@@ -167,5 +169,5 @@ This project uses the following third-party libraries:
 - [Thyemeleaf](https://www.thymeleaf.org/),  licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 - [Lombok](https://projectlombok.org/), llicensed under the [MIT License](https://opensource.org/license/mit)
 - [Jackson](https://github.com/FasterXML/jackson-core), licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-- [maven](https://github.com/apache/maven), licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+- [Apache Maven](https://maven.apache.org/), licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 - [PostgreSQL JDBC Driver](https://jdbc.postgresql.org/), licensed under the [2-Clause BSD License](https://opensource.org/license/BSD-2-Clause)

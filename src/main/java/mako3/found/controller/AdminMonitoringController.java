@@ -39,7 +39,8 @@ public class AdminMonitoringController {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
         snippetService.updateSnippet(snippet);
         logger.info(String.format("Succeeded to update monitoring snippet by %s", user.getUsername()));
-        return "redirect:/admin/monitoring";
+        model.addFlashAttribute("successMessage", "モニタリング設定を更新しました。");
+        return "redirect:/admin/monitoring?success";
     }
 
 }

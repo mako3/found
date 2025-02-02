@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import mako3.found.auth.CustomUserDetailsService;
+import mako3.found.auth.PasswordPolicyViolationException;
 import mako3.found.entity.PasswordResetToken;
 import mako3.found.mail.MailSendingException;
 import mako3.found.security.SecurityConfig;
@@ -30,12 +31,12 @@ public class SelftPasswordResetController {
     @Autowired
     private CustomUserDetailsService userService;
 
-    @GetMapping("/pw-reset/request")
+    @GetMapping("/password/reset/request")
     public String showRequestForm(Model model) {
         return "password-reset-request";
     }
 
-    @PostMapping("/pw-reset/send-token")
+    @PostMapping("/password/reset/send-token")
     public String sendTokenIfEmailExists(@RequestParam("email") String email, RedirectAttributes model) {
         // if email exists, send token to email
         Optional<String> username = userService.resolveUsernameIfExists(email);
@@ -44,15 +45,16 @@ public class SelftPasswordResetController {
                 userService.recordTokenWithMail(username.get(), email);
             } catch (MailSendingException e) {
                 model.addFlashAttribute("failureMessage", "トークンの送信に失敗しました。管理者にお問い合わせください。");
+                return "redirect:/password/reset/request?failure";
             }
         }
 
         // no matter how email exists, show sent message for security
         model.addFlashAttribute("successMessage", "パスワード再発行の要求を受け付けました。メールをご確認ください。");
-        return "redirect:/pw-reset/request";
+        return "redirect:/password/reset/request?success";
     }
 
-    @GetMapping("/pw-reset/open-link")
+    @GetMapping("/password/reset/open-link")
     public String openLinkFromMail(@RequestParam("token") String token, Model model) {
         // if token is valid, show form for update. Otherwise, show expired message
         Optional<PasswordResetToken> resetToken = userService.findToken(token);
@@ -60,37 +62,37 @@ public class SelftPasswordResetController {
             model.addAttribute("token", token);
             return "password-reset";
         } else {
-            return "redirect:/pw-reset/invalid-token";
+            return "redirect:/password/reset/invalid";
         }
     }
 
-    @GetMapping("/pw-reset/invalid-token")
+    @GetMapping("/password/reset/invalid")
     public String showResetInvalid() {
         return "password-reset-invalid";
     }
 
     @Transactional
-    @PostMapping("/pw-reset/reset")
+    @PostMapping("/password/reset/do-reset")
     public String resetPassword(@RequestParam("token") String token, @RequestParam("password") String newPassword,
             RedirectAttributes model) {
         Optional<PasswordResetToken> resetToken = userService.findToken(token);
-        if (newPassword.length() < 8) {
-            model.addFlashAttribute("failureMessage", "パスワードは入力規則を満たしていません。");
-            return "redirect:/pw-reset/open-link?token=" + token;
-        }
-
         if (resetToken.isPresent()) {
-            // do password update
-            userService.updatePassword(resetToken.get().getUsername(), newPassword);
+            try {
+                // do password update
+                userService.updatePassword(resetToken.get().getUsername(), newPassword, false);
+            } catch (PasswordPolicyViolationException e) {
+                model.addFlashAttribute("failureMessage", e.getMessage());
+                return "redirect:/password/reset/open-link?token=" + token;
+            }
             userService.invalidateToken(token);
             logger.info(String.format("succeeded to update password for %s", resetToken.get().getUsername()));
-            return "redirect:/pw-reset/reset-completed";
+            return "redirect:/password/reset/completed";
         } else {
-            return "redirect:/pw-reset/invalid-token";
+            return "redirect:/password/reset/invalid";
         }
     }
 
-    @GetMapping("/pw-reset/reset-completed")
+    @GetMapping("/password/reset/completed")
     public String showResetCompleted() {
         return "password-reset-completed";
     }

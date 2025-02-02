@@ -22,9 +22,11 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
     private final LocalDateTime lastLogin;
     private final LocalDateTime lastPasswordUpdate;
     private List<ChatSpace> memberSpaces;
+    private boolean forceChangePassowrd;
 
     public CustomUserDetails(String password, String username, String role, String emailForNotification,
-            String emailForMessageIdentity, LocalDateTime lastLogin, LocalDateTime lastPasswordUpdate) {
+            String emailForMessageIdentity, LocalDateTime lastLogin, LocalDateTime lastPasswordUpdate,
+            boolean forceChangePassowrd) {
         this.password = password;
         this.username = username;
         this.role = role;
@@ -32,6 +34,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
         this.emailForMessageIdentity = emailForMessageIdentity;
         this.lastLogin = lastLogin;
         this.lastPasswordUpdate = lastPasswordUpdate;
+        this.forceChangePassowrd = forceChangePassowrd;
     }
 
     @Override
@@ -80,6 +83,10 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
 
     public LocalDateTime getLastPasswordUpdate() {
         return lastPasswordUpdate;
+    }
+
+    public boolean forceChangePassowrd() {
+        return forceChangePassowrd;
     }
 
 }

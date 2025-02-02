@@ -3,7 +3,7 @@
 
 <head>
     <!-- include jQuery library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.js"></script>
 
     <script type="text/javascript" th:inline="javascript">
 
@@ -179,6 +179,22 @@
             });
         }
 
+        $(function () {
+            $('.file_label input[type=file]').on('change', function () {
+                var id = $(this)[0].id;
+                var file = $(this).prop('files')[0];
+                $('#' + id + '-p').text(file.name);
+            });
+        });
+
+        // for csrf 
+        $(function () {
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+            $(document).ajaxSend(function (e, xhr, options) {
+                xhr.setRequestHeader(header, token);
+            });
+        });
 
     </script>
 </head>
@@ -218,12 +234,19 @@
                 <td><span th:text="${space.messageCount}"></span></td>
                 <td><span th:text="${space.lastImportedUser}"></span></td>
                 <td><span th:text="${#temporals.format(space.lastImportedDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
-                <td><input type="file" th:id="${space.spaceId} + '-message'" class="json-uploader"
-                        accept="messages.json"></input>
+                <td><label class="file_label">ファイルを選択
+                        <input type="file" th:id="${space.spaceId} + '-message'" class="json-uploader"
+                            accept="messages.json"></input>
+                    </label>
+                    <p class="file_name" th:id="${space.spaceId} + '-message-p'">未選択</p>
                     <input type="hidden" th:id="${space.spaceId} + '-message-filename'"></input>
                 </td>
-                <td><input type="file" th:id="${space.spaceId} + '-group'" class="json-uploader"
-                        accept="group-info.json"></input>
+                <td>
+                    <label class="file_label">ファイルを選択
+                        <input type="file" th:id="${space.spaceId} + '-group'" class="json-uploader"
+                            accept="group-info.json"></input>
+                    </label>
+                    <p class="file_name" th:id="${space.spaceId} + '-group-p'">未選択</p>
                     <input type="hidden" th:id="${space.spaceId} + '-group-filename'"></input>
                 </td>
                 <td>

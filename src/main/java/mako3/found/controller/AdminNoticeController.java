@@ -38,7 +38,8 @@ public class AdminNoticeController {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
         noticeService.updateNotice(notice);
         logger.info(String.format("Succeeded to update notice by %s", user.getUsername()));
-        return "redirect:/admin/notice";
+        model.addFlashAttribute("successMessage", "お知らせ設定を更新しました。");
+        return "redirect:/admin/notice?success";
     }
 
 }

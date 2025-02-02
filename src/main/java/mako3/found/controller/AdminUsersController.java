@@ -86,10 +86,12 @@ public class AdminUsersController {
     @ResponseBody
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteUser(@CurrentSecurityContext SecurityContext context,
-            @RequestParam("username") String username) {
+            @RequestParam("usernames") List<String> usernames) {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
-        userService.deleteUser(username);
-        logger.info(String.format("succeeded to delete user %s by %s", username, user.getUsername()));
+
+        logger.info(String.format("%s is going to delete users %s", user.getUsername(), usernames));
+        int deletedCount = userService.deleteUsers(usernames);
+        logger.info(String.format("succeeded to delete %d users by %s", deletedCount, user.getUsername()));
         return ResponseEntity.ok("success");
     }
 

@@ -8,9 +8,11 @@
     <div layout:fragment="contents">
 
         <h2>お知らせ設定</h2>
+        <div th:if="${successMessage != null}" th:text="${successMessage}" class="success" style="width:80%;"></div>
+        <div th:if="${failureMessage != null}" th:text="${failureMessage}" class="alert" style="width:80%;"></div>
         <form th:action="@{/admin/updateNotice}" method="post">
             <label for="notice">Notice</label>
-            <textarea id="notice" name="notice" th:text="${notice}"></textarea>
+            <textarea id="notice" name="notice" th:text="${notice}" style="width:80%;"></textarea>
             <input type="submit" value="更新" />
         </form>
 

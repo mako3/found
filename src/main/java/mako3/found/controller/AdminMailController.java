@@ -44,13 +44,15 @@ public class AdminMailController {
             RedirectAttributes model) {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
         if (result.hasErrors()) {
-            model.addFlashAttribute("errorMessage", "入力規則に違反している箇所があります。");
+            model.addFlashAttribute("failureMessage", "入力規則に違反している箇所があります。");
+            return "redirect:/admin/mail?failure";
         } else {
             mailPropertyService.updateMailProperty(mailProperty);
             mailSenderService.init();
             logger.info(String.format("Succeeded to update mail settings by %s", user.getUsername()));
+            model.addFlashAttribute("successMessage", "メール設定を更新しました。");
         }
-        return "redirect:/admin/mail";
+        return "redirect:/admin/mail?success";
     }
 
 }

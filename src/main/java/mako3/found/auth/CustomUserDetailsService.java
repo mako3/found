@@ -73,10 +73,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         userDao.updateLastLogin(username);
     }
 
-    public void resetPasswordWithMail(String username, String emailForNotification) throws MailSendingException {
+    public void resetPasswordWithMail(String username, String emailForNotification)
+            throws MailSendingException, PasswordPolicyViolationException {
         String newPassword = generateRandom(DEFAULT_PASSWORD_LENGTH);
         mailService.sendPasswordMail(emailForNotification, username, newPassword);
-        updatePassword(username, newPassword);
+        updatePassword(username, newPassword, true);
     }
 
     public void recordTokenWithMail(String username, String emailForNotification)
@@ -99,10 +100,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         resetDao.deleteToken(token);
     }
 
-    public void updatePassword(String username, String newPassword) {
+    public void updatePassword(String username, String newPassword, boolean forceChangePassword)
+            throws PasswordPolicyViolationException {
+
+        // check password policy
+        if (newPassword.length() < 8) {
+            throw new PasswordPolicyViolationException("文字数が不足しています。");
+        }
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encodedPassword = "{bcrypt}" + encoder.encode(newPassword);
-        userDao.updatePassword(username, encodedPassword);
+        userDao.updatePassword(username, encodedPassword, forceChangePassword);
         logger.info(String.format("succeeded to update password for %s", username));
     }
 
@@ -123,8 +131,12 @@ public class CustomUserDetailsService implements UserDetailsService {
                 newUser.getEmailForMessageIdentity());
     }
 
-    public void deleteUser(String username) {
-        userDao.deleteUser(username);
+    public int deleteUser(String username) {
+        return userDao.deleteUser(username);
+    }
+
+    public int deleteUsers(List<String> usernames) {
+        return userDao.deleteUsers(usernames);
     }
 
 }

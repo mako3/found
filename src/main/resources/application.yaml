@@ -30,10 +30,12 @@ spring:
             data-locations: classpath:/data.sql
             encoding: UTF-8
     session:
-        timeout: 86400
+        timeout: ${SESSION_TIMEOUT:86400}
 server:
     servlet:
         context-path: ${CONTEXT_PATH:/found}
+        session:
+            timeout:  ${SESSION_TIMEOUT:86400}
     port: 8080
 
 logging:

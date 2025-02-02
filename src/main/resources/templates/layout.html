@@ -5,6 +5,8 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="_csrf" data-th-content="${_csrf.token}" />
+    <meta name="_csrf_header" data-th-content="${_csrf.headerName}" />
     <title>found</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
     <link rel="icon" th:href="@{/favicon.ico}" />
