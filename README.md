@@ -76,7 +76,7 @@ Please replace placeholders.
 | ${POSTGRES_PASSWORD} |  admin ||
 | ${POSTGRES_DB} |  postgres ||
 | ${CONTEXT_PATH} | /found | /found |
-| ${SESSION_TIMOUET} | 86400 | 86400 | 
+| ${SESSION_TIMEOUT} | 86400 | 86400 | 
 
 4. Open Web browser
 
