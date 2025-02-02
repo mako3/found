@@ -38,7 +38,7 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
 
         SavedRequest savedRequest = new HttpSessionRequestCache().getRequest(request, response);
         String targetUrl;
-        if (user.forceChangePassowrd()) {
+        if (user.getForceChangePassword()) {
             targetUrl = "/user/password/change";
         } else if (savedRequest != null) {
             targetUrl = savedRequest.getRedirectUrl();

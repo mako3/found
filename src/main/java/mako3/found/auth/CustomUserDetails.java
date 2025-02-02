@@ -85,7 +85,7 @@ public class CustomUserDetails implements UserDetails, CredentialsContainer {
         return lastPasswordUpdate;
     }
 
-    public boolean forceChangePassowrd() {
+    public boolean getForceChangePassword() {
         return forceChangePassowrd;
     }
 

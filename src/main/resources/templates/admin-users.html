@@ -12,6 +12,7 @@
             var formData = new FormData();
             formData.append('username', username);
             $.ajax(link, {
+                type: 'post',
                 processData: false,
                 contentType: false,
                 data: formData,
@@ -47,6 +48,9 @@
             cancelButton.disabled = false;
             cancelButton.textContent = "閉じる";;
 
+            cancelButton.onclick = function () {
+                location.href = /*[[@{/admin/users}]]*/'';
+            };
 
         }
 
@@ -159,6 +163,7 @@
                 <th>role</th>
                 <th>email for notification</th>
                 <th>email for message identity</th>
+                <th>force change password</th>
                 <th>last login</th>
                 <th>last password update</th>
             </tr>
@@ -168,6 +173,7 @@
                 <td><span th:text="${user.role}"></span></td>
                 <td><span th:text="${user.emailForNotification}"></span></td>
                 <td><span th:text="${user.emailForMessageIdentity}"></span></td>
+                <td><span th:text="${user.forceChangePassword} eq true ? '✅' : ''"></span></td>
                 <td><span th:text="${#temporals.format(user.lastLogin, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td><span th:text="${#temporals.format(user.lastPasswordUpdate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
             </tr>

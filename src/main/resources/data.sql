@@ -1,4 +1,4 @@
-INSERT INTO found_users (username, password, role) VALUES ('root', '{noop}admin', 'ADMIN') ON CONFLICT DO NOTHING;
+INSERT INTO found_users (username, password, role, force_change_password) VALUES ('root', '{noop}admin', 'ADMIN', 't') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.subject1', '[found] ログイン情報のお知らせ') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.body1', E'過去チャット検索システム(found)のログイン情報をお知らせします。\nユーザー名 [[${username}]]\nパスワード [[${password}]]') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.subject2', '[found] パスワード再発行の手続き') ON CONFLICT DO NOTHING;
