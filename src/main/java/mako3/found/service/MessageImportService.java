@@ -68,6 +68,7 @@ public class MessageImportService {
         messageDao.updateThreadReplyBySpaceId(spaceId);
         messageDao.updateHasReplyBySpaceId(spaceId);
         messageDao.updateTopicCreatedDateBySpaceId(spaceId);
+        messageDao.updateDisplaySeq(spaceId);
         spaceService.updateMessageCount(spaceId, list.size());
     }
 

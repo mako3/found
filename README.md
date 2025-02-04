@@ -34,7 +34,7 @@ $ docker run \
   -v paradedb_data:/var/lib/postgresql/data/ \
   -p 5432:5432 \
   -d \
-  paradedb/paradedb:v0.14.0
+  paradedb/paradedb:v0.15.0
 ```
 Please replace placeholders. 
 
@@ -108,7 +108,7 @@ $ docker run \
   -v paradedb_data:/var/lib/postgresql/data/ \
   -p 5432:5432 \
   -d \
-  paradedb/paradedb:v0.14.0
+  paradedb/paradedb:v0.15.0
 ```
 Please replace placeholders. 
 

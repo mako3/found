@@ -22,8 +22,8 @@
                         <th>access state</th>
                         <th>member count</th>
                         <th>message count</th>
-                        <th>lastImported user</th>
-                        <th>lastImported date</th>
+                        <th>last imported user</th>
+                        <th>last imported date</th>
                     </tr>
                     <tr>
                         <td><span th:text="${space.spaceId}"></span></td>
@@ -44,10 +44,10 @@
         <div class="header-pagenator">
             <h2>メッセージ一覧</h2>
             <div>
-                <input type="button" value="prev" th:disabled="${dateBefore == null}"
-                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateBefore=__${dateBefore}__}'|" />
-                <input type="button" value="next" th:disabled="${dateFrom == null}"
-                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateFrom=__${dateFrom}__}'|" />
+                <input type="button" value="prev" th:disabled="${prev eq false}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?seqFrom__${seqPrevFrom}__&seqTo=__${seqPrevTo}__}'|" />
+                <input type="button" value="next" th:disabled="${next eq false}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?seqFrom=__${seqNextFrom}__&seqTo=__${seqNextTo}__}'|" />
             </div>
         </div>
         <table border="1">
@@ -77,10 +77,10 @@
         </table>
         <div class="header-pagenator">
             <div>
-                <input type="button" value="prev" th:disabled="${dateBefore == null}"
-                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateBefore=__${dateBefore}__}'|" />
-                <input type="button" value="next" th:disabled="${dateFrom == null}"
-                    th:onclick="|location.href='@{/__${spaceId}__/messages?dateFrom=__${dateFrom}__}'|" />
+                <input type="button" value="prev" th:disabled="${prev eq false}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?seqFrom__${seqPrevFrom}__&seqTo=__${seqPrevTo}__}'|" />
+                <input type="button" value="next" th:disabled="${next eq false}"
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?seqFrom=__${seqNextFrom}__&seqTo=__${seqNextTo}__}'|" />
             </div>
         </div>
 

@@ -42,6 +42,25 @@ public class MessageJson {
         }
     }
 
+    @JsonSetter("deleted_date")
+    public void setDeletedDate(String utcDeletedDate) {
+        try {
+            LocalDateTime utc = LocalDateTime.parse(utcDeletedDate, FORMATTER);
+            ZonedDateTime jst = ZonedDateTime.of(utc, ZoneId.of("UTC")).withZoneSameInstant(ZoneId.of("Asia/Tokyo"));
+            this.createdDate = jst.toLocalDateTime();
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            this.createdDate = null;
+        }
+    }
+
+    @JsonSetter("message_state")
+    public void setMessageState(String messageState) {
+        if ("DELETED".equals(messageState)) {
+            this.text = "DELETED";
+        }
+    }
+
     @JsonSetter("text")
     public void setText(String text) {
         this.text = text;

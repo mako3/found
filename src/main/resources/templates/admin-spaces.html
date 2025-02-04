@@ -123,9 +123,13 @@
                 importButton.disabled = true;
                 cancelButton.disabled = false;
                 cancelButton.textContent = '閉じる';
+                cancelButton.onclick = function () {
+                    location.href = /*[[@{/admin/spaces}]]*/'';
+                };
                 statusMessage.classList.remove('warn');
                 statusMessage.classList.add('success');
                 statusMessage.textContent = 'インポートが正常に完了しました。';
+
             };
             document.getElementById('upload-dialog').showModal();
 
@@ -211,17 +215,17 @@
         <table border="1">
             <tr>
                 <th width="25px"></th>
-                <th width="60px">space id</th>
-                <th width="150px">space name</th>
+                <th width="100px">space id</th>
+                <th>space name</th>
                 <th width="60px">access state</th>
                 <th width="90px">member count</th>
                 <th width="90px">message count</th>
                 <th width="120px">last imported user</th>
                 <th width="120px">last imported date</th>
-                <th>messages.json</th>
-                <th>group_info.json</th>
-                <th width="160px">import</th>
-                <th width="60px">imported</th>
+                <th witdh="200px">messages.json</th>
+                <th witdh="200px">group_info.json</th>
+                <th width="90px">import</th>
+                <th width="80px">imported</th>
             </tr>
             <tr th:each="space:${spaceList}">
                 <td><input type="radio" name="space-selector" th:value="${space.spaceId}" /></td>
@@ -250,7 +254,8 @@
                     <input type="hidden" th:id="${space.spaceId} + '-group-filename'"></input>
                 </td>
                 <td>
-                    <button th:onclick="|uploadImport('__${space.spaceId}__');|">インポート</button>
+                    <button th:onclick="|uploadImport('__${space.spaceId}__');|"
+                        style="padding-left:10px;padding-right:10px;">インポート</button>
                 </td>
                 <td><span th:id="${space.spaceId} + '-imported'" th:text="${space.imported} eq true ? '✅' : '❌'"></span>
                 </td>

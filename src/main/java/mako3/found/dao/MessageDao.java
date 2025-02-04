@@ -2,9 +2,9 @@ package mako3.found.dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class MessageDao {
         // filter by accessible space ids
         if (!accessibleSpaceIds.isEmpty()) {
             sql += "space_id IN (:spaceIds) ";
-            parameters.addValue("spaceIds", accessibleSpaceIds);
+            parameters.addValue("spaceIds", accessibleSpaceIds, Types.CHAR);
         } else {
             // for irregular situation
             sql += "space_id = '' ";
@@ -45,55 +45,41 @@ public class MessageDao {
         // filter by terms
         if (!sanitizedTermList.isEmpty()) {
             sql += "AND message_text @@@ :messageText ";
-            parameters.addValue("messageText", String.join(" AND ", sanitizedTermList));
+            parameters.addValue("messageText", String.join(" AND ", sanitizedTermList), Types.VARCHAR);
         }
 
         // filter by created_date
         if (startDate != null && endDate != null) {
             sql += "AND created_date BETWEEN :startDate AND :endDate ";
-            parameters.addValue("startDate", startDate);
-            parameters.addValue("endDate", endDate);
+            parameters.addValue("startDate", startDate, Types.TIMESTAMP);
+            parameters.addValue("endDate", endDate, Types.TIMESTAMP);
         } else if (startDate != null) {
             sql += "AND created_date >= :startDate ";
-            parameters.addValue("startDate", startDate);
+            parameters.addValue("startDate", startDate, Types.TIMESTAMP);
         } else if (endDate != null) {
             sql += "AND created_date <= :endDate ";
-            parameters.addValue("endDate", endDate);
+            parameters.addValue("endDate", endDate, Types.TIMESTAMP);
         }
 
         // filter by creator_email
         if (!StringUtils.isEmpty(creatorEmail)) {
             sql += "AND creator_email = :creatorEmail ";
-            parameters.addValue("creatorEmail", creatorEmail);
+            parameters.addValue("creatorEmail", creatorEmail, Types.VARCHAR);
         }
 
         // limit clause
         sql += "limit :limit";
-        parameters.addValue("limit", limit);
+        parameters.addValue("limit", limit, Types.INTEGER);
 
         return namedJdbcTemplate.query(
                 sql,
                 parameters, new JdbcRowMapper());
     }
 
-    public List<ChatMessage> list(String spaceId, int limit) {
+    public List<ChatMessage> list(String spaceId, int seqFrom, int limit) {
         return jdbcTemplate.query(
-                "select * from found_messages where space_id = ? order by topic_created_date asc, created_date asc limit ?",
-                new JdbcRowMapper(), spaceId, limit);
-    }
-
-    public List<ChatMessage> listFrom(String spaceId, LocalDateTime dateFrom, int limit) {
-        return jdbcTemplate.query(
-                "select * from found_messages where space_id = ? and created_date >= ? order by topic_created_date asc, created_date asc limit ?",
-                new JdbcRowMapper(), spaceId, dateFrom, limit);
-    }
-
-    public List<ChatMessage> listBefore(String spaceId, LocalDateTime dateBefore, int limit) {
-        List<ChatMessage> list = jdbcTemplate.query(
-                "select * from found_messages where space_id = ? and created_date < ? order by topic_created_date desc, created_date desc limit ?",
-                new JdbcRowMapper(), spaceId, dateBefore, limit);
-        Collections.reverse(list);
-        return list;
+                "select * from found_messages where space_id = ? and display_seq >= ? order by display_seq asc limit ?",
+                new JdbcRowMapper(), spaceId, seqFrom, limit);
     }
 
     public List<ChatMessage> findByUrl(String messageUrl) {
@@ -130,6 +116,18 @@ public class MessageDao {
                 spaceId);
     }
 
+    public int updateDisplaySeq(String spaceId) {
+        return jdbcTemplate.update(
+                "UPDATE found_messages AS t1 SET display_seq = seq FROM (" + //
+                        "  SELECT space_id, message_id, ROW_NUMBER() OVER (ORDER BY topic_created_date ASC, created_date ASC) AS seq"
+                        +
+                        "  FROM found_messages" + //
+                        "  WHERE space_id = ?" + //
+                        "  ) AS t2" + //
+                        " WHERE t1.message_id = t2.message_id AND t1.space_id = t2.space_id;",
+                spaceId);
+    }
+
     public int updateTopicCreatedDateBySpaceId(String spaceId) {
         return jdbcTemplate.update(
                 "update found_messages parent set topic_created_date = (select min(child.created_date) from found_messages child where child.space_id = parent.space_id AND child.topic_id = parent.topic_id and child.thread_reply is not true) where parent.space_id=?;",
@@ -158,6 +156,7 @@ public class MessageDao {
                     .messageId(rs.getString("message_id"))
                     .threadReply(rs.getBoolean("thread_reply"))
                     .hasReply(rs.getBoolean("has_reply"))
+                    .displaySeq(rs.getInt("display_seq"))
                     .build();
         }
 

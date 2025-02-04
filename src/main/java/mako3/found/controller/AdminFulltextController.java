@@ -38,11 +38,9 @@ public class AdminFulltextController {
             RedirectAttributes model) {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
         boolean enabled = "enabled".equals(strEnabled);
-        if (enabled != fulltextService.isFulltextEnabled()) {
-            fulltextService.updateFulltextEnabled(enabled);
-            logger.info(String.format("Succeeded to update fulltext settings by %s", user.getUsername()));
-            model.addFlashAttribute("successMessage", "インデックス設定を更新しました。");
-        }
+        fulltextService.updateFulltextEnabled(enabled);
+        logger.info(String.format("Succeeded to update fulltext settings by %s", user.getUsername()));
+        model.addFlashAttribute("successMessage", "インデックス設定を更新しました。");
         return "redirect:/admin/fulltext";
     }
 

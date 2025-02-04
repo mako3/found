@@ -1,6 +1,5 @@
 package mako3.found.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -99,29 +98,12 @@ public class MessageService {
     }
 
     /** get message list with accessibility check */
-    public List<ChatMessage> list(CustomUserDetails user, String spaceId, int limit) throws AccessDeniedException {
-        if (!isAccessibleSpace(user, spaceId)) {
-            throw new AccessDeniedException("You are not allowed to access this space.");
-        }
-        return messageDao.list(spaceId, limit);
-    }
-
-    /** get message list with accessibility check */
-    public List<ChatMessage> listFrom(CustomUserDetails user, String spaceId, LocalDateTime dateFrom, int limit)
+    public List<ChatMessage> list(CustomUserDetails user, String spaceId, int seqFrom, int limit)
             throws AccessDeniedException {
         if (!isAccessibleSpace(user, spaceId)) {
             throw new AccessDeniedException("You are not allowed to access this space.");
         }
-        return messageDao.listFrom(spaceId, dateFrom, limit);
-    }
-
-    /** get message list with accessibility check */
-    public List<ChatMessage> listBefore(CustomUserDetails user, String spaceId, LocalDateTime dateBefore, int limit)
-            throws AccessDeniedException {
-        if (!isAccessibleSpace(user, spaceId)) {
-            throw new AccessDeniedException("You are not allowed to access this space.");
-        }
-        return messageDao.listBefore(spaceId, dateBefore, limit);
+        return messageDao.list(spaceId, seqFrom, limit);
     }
 
     private boolean isAccessibleSpace(CustomUserDetails user, String spaceId) {

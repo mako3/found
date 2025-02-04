@@ -34,6 +34,8 @@ public class ChatMessage {
 
     private boolean hasReply;
 
+    private int displaySeq;
+
     public String getUrlSafeCreatedDate() {
         return createdDate.format(FORMATTER);
     }

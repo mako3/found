@@ -10,4 +10,5 @@ INSERT INTO found_keyvalue (key, value) VALUES ('mail.port', '25') ON CONFLICT D
 INSERT INTO found_keyvalue (key, value) VALUES ('mail.host', '') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('notice', '') ON CONFLICT DO NOTHING;
 INSERT INTO found_keyvalue (key, value) VALUES ('fulltext.index', 'true') ON CONFLICT DO NOTHING;
+UPDATE found_keyvalue SET value = 'true' WHERE key = 'fulltext.index';
 INSERT INTO found_keyvalue (key, value) VALUES ('monitoring.snippet', '') ON CONFLICT DO NOTHING;

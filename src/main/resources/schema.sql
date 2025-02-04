@@ -3,18 +3,21 @@ SET timezone TO 'Asia/Tokyo';
 
 CREATE TABLE IF NOT EXISTS found_messages(
   space_id varchar(12) NOT NULL,
+  message_id varchar(35) NOT NULL, 
+  display_seq integer NOT NULL DEFAULT 0,
+  topic_id varchar(11),
   creator_name varchar(40),
   creator_email varchar(40),
   creator_user_type varchar(10),
   created_date timestamp,
   topic_created_date timestamp,
   message_text text,
-  topic_id varchar(11),
-  message_id varchar(35) NOT NULL, 
   thread_reply boolean DEFAULT false,
   has_reply boolean DEFAULT false,
   PRIMARY KEY (message_id)
 );
+
+CREATE INDEX IF NOT EXISTS found_messages_order_index ON found_messages (space_id, display_seq);
 
 CREATE INDEX IF NOT EXISTS found_messages_index ON found_messages 
 USING bm25 (message_id, space_id, message_text, created_date, creator_email)

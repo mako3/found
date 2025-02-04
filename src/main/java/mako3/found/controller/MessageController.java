@@ -1,6 +1,5 @@
 package mako3.found.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,48 +30,50 @@ public class MessageController {
     public String message(
             @CurrentSecurityContext SecurityContext context,
             @PathVariable String spaceId,
-            @RequestParam(name = "dateFrom", required = false) String dateFrom,
-            @RequestParam(name = "dateBefore", required = false) String dateBefore,
-            @RequestParam(name = "limit", defaultValue = "100") int limit,
+            @RequestParam(name = "seqFrom", required = false, defaultValue = "1") int seqFrom,
+            @RequestParam(name = "seqTo", required = false, defaultValue = "100") int seqTo,
             Model model) {
+
+        if (seqFrom < 1 || seqTo < 1 || seqFrom > seqTo) {
+            return "redirect:/error";
+        }
 
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
 
-        if (dateFrom == null && dateBefore == null) {
-            List<ChatMessage> messages = messageService.list(user, spaceId, limit + 1);
-            ChatSpace space = spaceService.getOneCached(spaceId);
-            model.addAttribute("space", space);
-            model.addAttribute("messageList", messages);
-            if (messages.size() > limit) {
-                model.addAttribute("messageList", messages.subList(0, Math.min(limit, messages.size())));
-                model.addAttribute("dateFrom", messages.get(limit).getUrlSafeCreatedDate());
-            }
-        } else if (dateFrom != null) {
-            LocalDateTime datetimeFrom = LocalDateTime.parse(dateFrom, ChatMessage.FORMATTER);
-            List<ChatMessage> messages = messageService.listFrom(user, spaceId, datetimeFrom, limit + 1);
-            ChatSpace space = spaceService.getOneCached(spaceId);
-            model.addAttribute("space", space);
-            model.addAttribute("messageList", messages.subList(0, Math.min(limit, messages.size())));
-            if (messages.size() > limit) {
-                model.addAttribute("dateFrom", messages.get(limit).getUrlSafeCreatedDate());
-            }
-            if (!messages.isEmpty()) {
-                model.addAttribute("dateBefore", messages.get(0).getUrlSafeCreatedDate());
-            }
+        int limit = seqTo - seqFrom + 1;
+        List<ChatMessage> messages = messageService.list(user, spaceId, seqFrom, limit + 1);
+        ChatSpace space = spaceService.getOneCached(spaceId);
+        model.addAttribute("space", space);
 
-        } else if (dateBefore != null) {
-            LocalDateTime datetimeBefore = LocalDateTime.parse(dateBefore, ChatMessage.FORMATTER);
-            List<ChatMessage> messages = messageService.listBefore(user, spaceId, datetimeBefore, limit + 1);
-            ChatSpace space = spaceService.getOneCached(spaceId);
-            model.addAttribute("space", space);
-            model.addAttribute("messageList", messages.subList(0, Math.min(limit, messages.size())));
-            if (messages.size() > limit) {
-                model.addAttribute("dateBefore", messages.get(0).getUrlSafeCreatedDate());
-            }
-            if (!messages.isEmpty()) {
-                model.addAttribute("dateFrom", dateBefore);
-            }
+        boolean hasPrev = seqFrom > 1 ? true : false;
+        boolean hasNext = messages.size() > limit ? true : false;
+
+        if (hasNext && hasPrev) {
+            model.addAttribute("messageList", messages.subList(0, limit));
+            model.addAttribute("prev", true);
+            model.addAttribute("next", true);
+            model.addAttribute("seqPrevFrom", Math.max(seqFrom - 100, 1));
+            model.addAttribute("seqPrevTo", seqFrom - 1);
+            model.addAttribute("seqNextFrom", seqTo + 1);
+            model.addAttribute("seqNextTo", seqTo + 100);
+        } else if (hasNext) {
+            model.addAttribute("messageList", messages.subList(0, limit));
+            model.addAttribute("prev", false);
+            model.addAttribute("next", true);
+            model.addAttribute("seqNextFrom", seqTo + 1);
+            model.addAttribute("seqNextTo", seqTo + 100);
+        } else if (hasPrev) {
+            model.addAttribute("messageList", messages);
+            model.addAttribute("prev", true);
+            model.addAttribute("next", false);
+            model.addAttribute("seqPrevFrom", Math.max(seqFrom - 100, 1));
+            model.addAttribute("seqPrevTo", seqFrom - 1);
+        } else {
+            model.addAttribute("messageList", messages);
+            model.addAttribute("prev", false);
+            model.addAttribute("next", false);
         }
+
         return "message";
     }
 

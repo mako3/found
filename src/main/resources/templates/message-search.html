@@ -90,7 +90,7 @@
                             th:text="${message.spaceId}"></span></a></td>
                 <td><span th:text="${message.spaceName}"></span></td>
                 <td><a
-                        th:href="@{/{spaceId}/messages?dateFrom={createdDate}(spaceId=${message.spaceId},createdDate=${message.urlSafeCreatedDate})}"><span
+                        th:href="@{/{spaceId}/messages?seqFrom={seqFrom}&seqTo={seqTo}(spaceId=${message.spaceId},seqFrom=${message.displaySeq},seqTo=${message.displaySeq + 100})}"><span
                             th:text="${message.messageId}"></span></a></td>
                 <td><span th:text="${message.creatorName}"></span></td>
                 <td><span th:text="${message.creatorEmail}"></span></td>
