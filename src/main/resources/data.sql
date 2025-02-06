@@ -12,3 +12,4 @@ INSERT INTO found_keyvalue (key, value) VALUES ('notice', '') ON CONFLICT DO NOT
 INSERT INTO found_keyvalue (key, value) VALUES ('fulltext.index', 'true') ON CONFLICT DO NOTHING;
 UPDATE found_keyvalue SET value = 'true' WHERE key = 'fulltext.index';
 INSERT INTO found_keyvalue (key, value) VALUES ('monitoring.snippet', '') ON CONFLICT DO NOTHING;
+UPDATE found_spaces SET import_status = 0 WHERE import_status = '1';

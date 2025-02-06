@@ -63,9 +63,13 @@ public class SpaceDao {
                 array, memberIds.size(), spaceId);
     }
 
+    public void updateImportStatus(String spaceId, int importStatus) {
+        jdbcTemplate.update("update found_spaces set import_status = ? where space_id = ?", importStatus, spaceId);
+    }
+
     public void updateLastImported(String spaceId, String executorName) {
         jdbcTemplate.update(
-                "update found_spaces set last_imported_date = current_timestamp, last_imported_user = ? where space_id = ?",
+                "update found_spaces set last_imported_date = current_timestamp, last_imported_user = ?, import_status = 2 where space_id = ?",
                 executorName, spaceId);
     }
 
@@ -99,6 +103,7 @@ public class SpaceDao {
                     .memberIds(Arrays.asList((String[]) rs.getArray("member_ids").getArray()))
                     .memberCount(rs.getInt("member_count"))
                     .messageCount(rs.getInt("message_count"))
+                    .importStatus(rs.getInt("import_status"))
                     .build();
         }
 

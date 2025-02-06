@@ -1,6 +1,7 @@
 package mako3.found;
 
 import java.util.TimeZone;
+import java.util.concurrent.Executor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,6 +11,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import mako3.found.service.FileSystemStorageService;
 import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
@@ -17,6 +20,7 @@ import nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect;
 @SpringBootApplication
 @EnableCaching
 @EnableRetry
+@EnableAsync
 public class FoundApplication {
 
 	private static Log logger = LogFactory.getLog(FoundApplication.class);
@@ -27,7 +31,7 @@ public class FoundApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(FileSystemStorageService storageService) {
+	public CommandLineRunner init(FileSystemStorageService storageService) {
 		return (args) -> {
 			storageService.init();
 		};
@@ -36,6 +40,17 @@ public class FoundApplication {
 	@Bean
 	public LayoutDialect layoutDialect() {
 		return new LayoutDialect();
+	}
+
+	@Bean(name = "import-thread")
+	public Executor taskExecutor() {
+		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+		executor.setCorePoolSize(2);
+		executor.setMaxPoolSize(2);
+		executor.setQueueCapacity(500);
+		executor.setThreadNamePrefix("import-thread-");
+		executor.initialize();
+		return executor;
 	}
 
 }

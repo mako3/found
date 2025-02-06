@@ -74,6 +74,10 @@ public class SpaceService {
         spaceDao.updateLastImported(spaceId, executorName);
     }
 
+    public void updateImportStatus(String spaceId, int importStatus) {
+        spaceDao.updateImportStatus(spaceId, importStatus);
+    }
+
     @Caching(evict = {
             @CacheEvict(value = "space-one", key = "#spaceId"),
             @CacheEvict(value = "space-list", allEntries = true)

@@ -30,8 +30,7 @@ public class ChatSpace {
 
     private int messageCount;
 
-    public boolean getImported() {
-        return lastImportedUser != null && !lastImportedUser.isEmpty();
-    }
+    // 0: registered, 1: in progress, 2: succeeded, 9:failed
+    private int importStatus;
 
 }

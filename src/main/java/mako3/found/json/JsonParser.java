@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,6 +14,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 @Component
 public class JsonParser {
+
+    private static Log logger = LogFactory.getLog(JsonParser.class);
 
     public List<MessageJson> parseMessages(String spaceId, File file) throws JsonException {
         ObjectMapper mapper = new ObjectMapper();
@@ -28,7 +32,7 @@ public class JsonParser {
                 }
                 list.add(message);
             }
-
+            logger.info(String.format("succeeded to parse messages for spaceId:%s", spaceId));
             return list;
         } catch (JsonException e) {
             throw e;
@@ -52,6 +56,7 @@ public class JsonParser {
                 GroupMemberJson groupMember = mapper.treeToValue(n, GroupMemberJson.class);
                 list.add(groupMember);
             }
+            logger.info(String.format("succeeded to parse space members for spaceName:%s", spaceName));
             return list;
         } catch (JsonException e) {
             throw e;

@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS found_spaces (
   access_state varchar(12),
   last_imported_user varchar(100),
   last_imported_date timestamp,
+  import_status smallint,
   member_ids varchar(100)[],
   member_count smallint,
   message_count integer,
@@ -70,4 +71,13 @@ CREATE TABLE IF NOT EXISTS found_password_reset (
   primary key (token)
 );
 
+CREATE TABLE IF NOT EXISTS found_tasks (
+  task_id varchar(128), 
+  task_status smallint default 0,
+  registered_at timestamp not null,
+  registered_by varchar(100),
+  finished_at timestamp,
+  error_message text,
+  primary key (task_id)
+);
  

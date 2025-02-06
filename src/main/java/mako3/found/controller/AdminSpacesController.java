@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,10 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 import mako3.found.auth.CustomUserDetails;
 import mako3.found.entity.ChatSpace;
 import mako3.found.entity.NewSpace;
+import mako3.found.entity.Task;
 import mako3.found.json.JsonException;
 import mako3.found.service.FileSystemStorageService;
 import mako3.found.service.MessageImportService;
 import mako3.found.service.SpaceService;
+import mako3.found.service.TaskService;
 
 @Controller
 public class AdminSpacesController {
@@ -45,6 +48,9 @@ public class AdminSpacesController {
 
     @Autowired
     private FileSystemStorageService storageService;
+
+    @Autowired
+    private TaskService importTaskService;
 
     @GetMapping("/admin/spaces")
     @PreAuthorize("hasRole('ADMIN')")
@@ -64,23 +70,21 @@ public class AdminSpacesController {
             @RequestParam("filenameOfGroupInfoJson") String filenameOfGroupInfoJson) {
         CustomUserDetails user = (CustomUserDetails) context.getAuthentication().getPrincipal();
 
-        logger.info(String.format("Going to import json for space %s.", spaceId));
+        String taskId = importTaskService.registerTask(user.getUsername());
+        spaceService.updateImportStatus(spaceId, Task.Status.REGISTERED.getValue());
+        logger.info(String.format("succeeded to register import task for space %s.", spaceId));
 
-        try {
-            long t1 = System.currentTimeMillis();
-            messageImportService.importJson(spaceId, filenameOfMessagesJson, filenameOfGroupInfoJson,
-                    user.getUsername());
-            long t2 = System.currentTimeMillis();
-            logger.info(String.format("Succeeded to import json for space %s in %d msec.", spaceId, t2 - t1));
-        } catch (JsonException e) {
-            logger.error(String.format("failed to import json for space %s", spaceId), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            logger.error(String.format("failed to import json for space %s", spaceId), e);
-            return ResponseEntity.internalServerError().body("Jsonのインポートに失敗しました。");
-        }
+        messageImportService.importJsonAync(spaceId, filenameOfMessagesJson, filenameOfGroupInfoJson,
+                user.getUsername(), taskId);
 
-        return ResponseEntity.ok(String.format("Succeeded to import json for space %s", spaceId));
+        return ResponseEntity.ok(taskId);
+    }
+
+    @GetMapping("/admin/importStatus/{taskId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @ResponseBody
+    public Task getImportStatus(@PathVariable String taskId) {
+        return importTaskService.getStatus(taskId);
     }
 
     @PostMapping("/admin/uploadMessagesJson")

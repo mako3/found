@@ -54,6 +54,7 @@
 
         function importJson(spaceId) {
             const link = /*[[@{/admin/importJson}]]*/'';
+            var taskId;
             $.ajax({
                 url: link,
                 type: 'get',
@@ -61,75 +62,120 @@
                 dataType: "html",
                 async: false
             }).done(function (data) {
-                $('#' + spaceId + '-group-filename').val(data);
+                taskId = data;
+            }).fail(function (jqXHR) {
+                throw new Error(jqXHR.responseText);
+            }).always(function () {
+            });
+            return taskId;
+        }
+
+        function setUploadDialog(state, message) {
+            var importButton = document.getElementById('import-trigger');
+            var cancelButton = document.getElementById('cancel-trigger');
+            var statusMessage = document.getElementById('upload-dialog-message');
+
+            switch (state) {
+                case "init":
+                    importButton.disabled = false;
+                    importButton.textContent = '実行';
+                    cancelButton.disabled = false;
+                    cancelButton.textContent = '閉じる';
+                    statusMessage.textContent = '';
+                    statusMessage.classList.remove(...statusMessage.classList);
+                    break;
+                case "inprogress":
+                    importButton.disabled = true;
+                    importButton.textContent = '実行';
+                    cancelButton.disabled = false;
+                    cancelButton.textContent = '閉じる';
+                    statusMessage.textContent = '';
+                    statusMessage.classList.remove(...statusMessage.classList);
+                    statusMessage.classList.add('warn');
+                    statusMessage.textContent = message;
+                    break;
+                case "success":
+                    importButton.disabled = true;
+                    cancelButton.disabled = false;
+                    cancelButton.textContent = '閉じる';
+                    cancelButton.onclick = function () {
+                        location.href = /*[[@{/admin/spaces}]]*/'';
+                    };
+                    statusMessage.classList.remove(...statusMessage.classList);
+                    statusMessage.classList.add('success');
+                    statusMessage.textContent = 'インポートが正常に完了しました。';
+                    break;
+                case "failure":
+                    importButton.disabled = true;
+                    cancelButton.disabled = false;
+                    cancelButton.textContent = '閉じる';
+                    statusMessage.classList.remove(...statusMessage.classList);
+                    statusMessage.classList.add('alert');
+                    statusMessage.textContent = message;
+                    break;
+            }
+
+        }
+
+        function pollingUntilImported(taskId) {
+            const link = /*[[@{/admin/importStatus/}]]*/'';
+            $.ajax({
+                url: link + taskId,
+                type: 'get',
+                dataType: "json",
+                async: false,
+            }).done(function (data) {
+                switch (data.status) {
+                    case 'SUCCEEDED':
+                        setUploadDialog('success');
+                        break;
+                    case 'FAILED':
+                        setUploadDialog('failure', 'インポートに失敗しました。' + data.errorMessage);
+                        break;
+                    case 'IN_PROGRESS':
+                        setUploadDialog('inprogress', 'インポートが実行中です。');
+                        setTimeout(pollingUntilImported, 5000, taskId);
+                        break;
+                    case 'REGISTERED':
+                        setTimeout(pollingUntilImported, 5000, taskId);
+                        break;
+                }
             }).fail(function (jqXHR) {
                 throw new Error(jqXHR.responseText);
             }).always(function () {
             });
         }
 
-        function uploadImport(spaceId) {
-            var importButton = document.getElementById('import-trigger');
-            var cancelButton = document.getElementById('cancel-trigger');
-            var statusMessage = document.getElementById('upload-dialog-message');
 
-            importButton.disabled = false;
-            cancelButton.disabled = false;
-            cancelButton.textContent = 'キャンセル';
-            statusMessage.textContent = '';
-            statusMessage.classList.remove(...statusMessage.classList);
+        function uploadImport(spaceId) {
+            setUploadDialog('init');
 
             var messageFile = document.getElementById(spaceId + '-message').files[0];
             var groupFile = document.getElementById(spaceId + '-group').files[0];
 
             if (messageFile == null || groupFile == null) {
-                statusMessage.textContent = 'ファイルが選択されていません。';
-                statusMessage.classList.add('alert');
-                importButton.disabled = true;
-                cancelButton.textContent = '閉じる';
+                setUploadDialog('failure', 'ファイルが選択されていません。');
                 document.getElementById('upload-dialog').showModal();
                 return;
             }
 
             if ("messages.json" != messageFile.name || "group_info.json" != groupFile.name) {
-                statusMessage.textContent = 'ファイル名が正しくありません。';
-                statusMessage.classList.add('alert');
-                importButton.disabled = true;
-                cancelButton.textContent = '閉じる';
+                setUploadDialog('failure', 'ファイル名が正しくありません。');
                 document.getElementById('upload-dialog').showModal();
                 return;
             }
 
-            importButton.onclick = function () {
-                importButton.disabled = true;
-                cancelButton.disabled = true;
-                statusMessage.classList.add('warn');
-                statusMessage.textContent = 'インポートを実行中です。';
-                statusMessage.offsetHeight; // to force repaint (but not works well)
+            document.getElementById('import-trigger').onclick = function () {
+                setUploadDialog('inprogress', 'インポートの実行が予約されました。');
 
                 try {
                     uploadMessage(spaceId);
                     uploadGroupInfo(spaceId);
-                    importJson(spaceId);
+                    var taskId = importJson(spaceId);
+                    pollingUntilImported(taskId);
                 } catch (e) {
-                    importButton.disabled = true;
-                    cancelButton.disabled = false;
-                    cancelButton.textContent = '閉じる';
-                    statusMessage.classList.remove('warn');
-                    statusMessage.classList.add('alert');
-                    statusMessage.textContent = 'インポートに失敗しました。' + e.message;
-                    return;
+                    setUploadDialog('failure', 'インポートに失敗しました。' + e.message);
                 }
-                importButton.disabled = true;
-                cancelButton.disabled = false;
-                cancelButton.textContent = '閉じる';
-                cancelButton.onclick = function () {
-                    location.href = /*[[@{/admin/spaces}]]*/'';
-                };
-                statusMessage.classList.remove('warn');
-                statusMessage.classList.add('success');
-                statusMessage.textContent = 'インポートが正常に完了しました。';
-
             };
             document.getElementById('upload-dialog').showModal();
 
@@ -225,7 +271,7 @@
                 <th witdh="200px">messages.json</th>
                 <th witdh="200px">group_info.json</th>
                 <th width="90px">import</th>
-                <th width="80px">imported</th>
+                <th width="80px">import status</th>
             </tr>
             <tr th:each="space:${spaceList}">
                 <td><input type="radio" name="space-selector" th:value="${space.spaceId}" /></td>
@@ -257,7 +303,14 @@
                     <button th:onclick="|uploadImport('__${space.spaceId}__');|"
                         style="padding-left:10px;padding-right:10px;">インポート</button>
                 </td>
-                <td><span th:id="${space.spaceId} + '-imported'" th:text="${space.imported} eq true ? '✅' : '❌'"></span>
+                <td>
+                    <th:block th:switch="${space.importStatus}">
+                        <span th:case=0></span>
+                        <span th:case=1>🔄️</span>
+                        <span th:case=2>✅</span>
+                        <span th:case=9>❌️</span>
+                        <span th:case=*></span>
+                    </th:block>
                 </td>
             </tr>
         </table>
@@ -268,9 +321,9 @@
             <p>メッセージデータのインポートを実行します。よろしいですか？</p>
             <ul>
                 <li>200MBを超えるファイルはアップロードできません。</li>
-                <li>大量のファイルをアップロードする際は、全文検索インデックスの一時無効化を推奨します。</li>
-                <li>複数のスペースのメッセージデータを同時にインポートすることはお控えください。</li>
+                <li>インポートを高速化するために、全文検索インデックスの一時無効化を推奨します。</li>
                 <li>インポート対象のスペースと、jsonファイル中のスペース識別子が異なる場合はエラーとなります。</li>
+                <li>既にインポート済みのメッセージは削除されます。この操作が失敗した場合、削除はロールバックされます。</li>
             </ul>
             <div style="position:absolute; bottom:20px; right:20px;">
                 <button id="import-trigger">実行</button>
