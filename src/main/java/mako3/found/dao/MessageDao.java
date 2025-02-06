@@ -6,6 +6,7 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,8 +28,33 @@ public class MessageDao {
     @Autowired
     private NamedParameterJdbcTemplate namedJdbcTemplate;
 
-    public List<ChatMessage> findByTerms(List<String> accessibleSpaceIds, List<String> sanitizedTermList,
+    private String sanitize(String raw) {
+        // sanitized special characters defined at https://docs.paradedb.com/documentation/full-text/overview
+        Set<Character> specialChars = Set.of(
+                '+', '^', '`', ':', '{', '}', '"', '[', ']', '(', ')', '<', '>', '~', '!', '*', '\\');
+        StringBuilder sb = new StringBuilder();
+        for (char c : raw.toCharArray()) {
+            if (specialChars.contains(c)) {
+                sb.append('\\');
+            }
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
+    private List<String> preProcess(String rawKeyword) {
+        String[] spaceSplittedTermArray = rawKeyword.replaceAll("　", " ").split("\s");
+        List<String> spaceSplittedTermList = spaceSplittedTermArray.length == 1 && spaceSplittedTermArray[0].isEmpty()
+                ? List.of()
+                : List.of(spaceSplittedTermArray);
+        List<String> sanitizedTermList = spaceSplittedTermList.stream().map(this::sanitize).toList();
+        return sanitizedTermList;
+    }
+
+    public List<ChatMessage> findByTerms(List<String> accessibleSpaceIds, String rawKeyword,
             LocalDate startDate, LocalDate endDate, String creatorEmail, int limit) {
+
+        List<String> sanitizedTermList = preProcess(rawKeyword);
 
         String sql = "SELECT * FROM found_messages WHERE ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
