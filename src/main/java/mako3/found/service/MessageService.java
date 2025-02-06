@@ -1,6 +1,7 @@
 package mako3.found.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,14 +68,30 @@ public class MessageService {
         return filteredMessages;
     }
 
+    private String sanitize(String raw) {
+        // sanitized special characters defined at https://docs.paradedb.com/documentation/full-text/overview
+        Set<Character> specialChars = Set.of(
+                '+', '^', '`', ':', '{', '}', '"', '[', ']', '(', ')', '<', '>', '~', '!', '*', '\\');
+        StringBuilder sb = new StringBuilder();
+        for (char c : raw.toCharArray()) {
+            if (specialChars.contains(c)) {
+                sb.append('\\');
+            }
+            sb.append(c);
+        }
+        return sb.toString();
+    }
+
     private List<ChatMessage> findByTerms(CustomUserDetails user, MessageQuery query) {
-        String[] sanitizedTermArray = query.getKeyword().replaceAll("　", " ").split("\s");
-        List<String> sanitizedTermList = sanitizedTermArray.length == 1 && sanitizedTermArray[0].isEmpty()
+        String[] spaceSplittedTermArray = query.getKeyword().replaceAll("　", " ").split("\s");
+        List<String> spaceSplittedTermList = spaceSplittedTermArray.length == 1 && spaceSplittedTermArray[0].isEmpty()
                 ? List.of()
-                : List.of(sanitizedTermArray);
+                : List.of(spaceSplittedTermArray);
+        List<String> sanitizedTermList = spaceSplittedTermList.stream().map(this::sanitize).toList();
         List<String> accessibleSpaceIds = defineSpacesForSearch(user, query);
 
-        return messageDao.findByTerms(accessibleSpaceIds, sanitizedTermList, query.getStartDate(), query.getEndDate(),
+        return messageDao.findByTerms(accessibleSpaceIds, sanitizedTermList, query.getStartDate(),
+                query.getEndDate(),
                 query.getCreatorEmail(), query.getLimit());
     }
 
