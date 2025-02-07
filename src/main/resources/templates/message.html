@@ -78,7 +78,7 @@
         <div class="header-pagenator">
             <div>
                 <input type="button" value="prev" th:disabled="${prev eq false}"
-                    th:onclick="|location.href='@{/__${spaceId}__/messages?seqFrom__${seqPrevFrom}__&seqTo=__${seqPrevTo}__}'|" />
+                    th:onclick="|location.href='@{/__${spaceId}__/messages?seqFrom=__${seqPrevFrom}__&seqTo=__${seqPrevTo}__}'|" />
                 <input type="button" value="next" th:disabled="${next eq false}"
                     th:onclick="|location.href='@{/__${spaceId}__/messages?seqFrom=__${seqNextFrom}__&seqTo=__${seqNextTo}__}'|" />
             </div>
