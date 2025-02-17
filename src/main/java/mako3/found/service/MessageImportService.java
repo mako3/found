@@ -96,6 +96,7 @@ public class MessageImportService {
                         .creatorUserType(e.getCreatorUserType())
                         .createdDate(e.getCreatedDate())
                         .topicId(e.getTopicId())
+                        .attachedFiles(e.getAttachedFiles() != null ? e.getAttachedFiles() : List.of())
                         .build())
                 .collect(Collectors.toList());
         messageDao.deleteMessagesbySpaceId(spaceId);

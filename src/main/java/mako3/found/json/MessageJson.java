@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -29,6 +30,16 @@ public class MessageJson {
     private String creatorName;
     private String creatorEmail;
     private String creatorUserType;
+    private List<String> attachedFiles;
+
+    @JsonSetter("attached_files")
+    public void setAttachedFiles(List<Map<String, Object>> attachedFiles) {
+        // cut the file name to 200 characters
+        this.attachedFiles = attachedFiles.stream().map(m -> {
+            String rawFilename = (String) m.get("export_name");
+            return rawFilename.length() > 200 ? rawFilename.substring(0, 200) : rawFilename;
+        }).toList();
+    }
 
     @JsonSetter("created_date")
     public void setCreatedDate(String utcCreatedDate) {

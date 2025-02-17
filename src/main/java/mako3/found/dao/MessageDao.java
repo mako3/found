@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -116,7 +117,7 @@ public class MessageDao {
 
     public void insert(List<ChatMessage> list) {
         list.stream().forEach(e -> jdbcTemplate.update(
-                "insert into found_messages (space_id, creator_name, creator_email, creator_user_type, created_date, message_text, topic_id, message_id, thread_reply, has_reply) values (?,?,?,?,?,?,?,?, false, false)",
+                "insert into found_messages (space_id, creator_name, creator_email, creator_user_type, created_date, message_text, topic_id, message_id, thread_reply, has_reply, attached_files) values (?,?,?,?,?,?,?,?, false, false, ?)",
                 e.getSpaceId(),
                 e.getCreatorName(),
                 e.getCreatorEmail(),
@@ -124,7 +125,8 @@ public class MessageDao {
                 e.getCreatedDate(),
                 e.getMessageText(),
                 e.getTopicId(),
-                e.getMessageId()));
+                e.getMessageId(),
+                e.getAttachedFiles().toArray(new String[0])));
     }
 
     public boolean checkMessageExistsBySpaceId(String spaceId) {
@@ -178,6 +180,7 @@ public class MessageDao {
                     .creatorUserType(rs.getString("creator_user_type"))
                     .createdDate(rs.getObject("created_date", LocalDateTime.class))
                     .messageText(rs.getString("message_text"))
+                    .attachedFiles(Arrays.asList((String[]) rs.getArray("attached_files").getArray()))
                     .topicId(rs.getString("topic_id"))
                     .messageId(rs.getString("message_id"))
                     .threadReply(rs.getBoolean("thread_reply"))

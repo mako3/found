@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS found_messages(
   creator_email varchar(40),
   creator_user_type varchar(10),
   created_date timestamp,
+  attached_files varchar(200)[],
   topic_created_date timestamp,
   message_text text,
   thread_reply boolean DEFAULT false,

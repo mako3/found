@@ -58,6 +58,7 @@
                 <th width="120px">creator email</th>
                 <th width="120px">created date</th>
                 <th>message text</th>
+                <th width="30px">file</th>
             </tr>
             <tr th:each="message:${messageList}">
                 <td>
@@ -73,6 +74,9 @@
                 <td><span th:text="${message.creatorEmail}"></span></td>
                 <td><span th:text="${#temporals.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td><span th:text="${message.messageText}"></span></td>
+                <td><span th:if="!${#lists.isEmpty(message.attachedFiles)}"
+                        th:title="${message.attachedFiles}">📁</span></td>
+
             </tr>
         </table>
         <div class="header-pagenator">

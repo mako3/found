@@ -2,6 +2,7 @@ package mako3.found.entity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
@@ -35,6 +36,8 @@ public class ChatMessage {
     private boolean hasReply;
 
     private int displaySeq;
+
+    private List<String> attachedFiles;
 
     public String getUrlSafeCreatedDate() {
         return createdDate.format(FORMATTER);
