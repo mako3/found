@@ -12,13 +12,11 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import mako3.found.controller.AdminSpacesController;
-
 // based on https://spring.pleiades.io/guides/gs/uploading-files
 @Component
 public class FileSystemStorageService {
 
-    private static Log logger = LogFactory.getLog(AdminSpacesController.class);
+    private static Log logger = LogFactory.getLog(FileSystemStorageService.class);
 
     private Path rootLocation = Paths.get("upload-dir");
 

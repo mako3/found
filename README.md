@@ -4,10 +4,10 @@ Simple viewer of archived chat log specialized for Google Chat.
 ## Features 
 
 1. Message Search
-2. Space Search
+2. Json Importer
 3. User Management
-4. Message/Group Json Upload
-5. Role Management
+
+See [Wiki](https://github.com/mako3/found/wiki) for more details. 
 
 ## Run found with a Database Container
 

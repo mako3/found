@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS found_messages(
   message_id varchar(35) NOT NULL, 
   display_seq integer NOT NULL DEFAULT 0,
   topic_id varchar(11),
-  creator_name varchar(40),
-  creator_email varchar(40),
+  creator_name varchar(80),
+  creator_email varchar(80),
   creator_user_type varchar(10),
   created_date timestamp,
   attached_files varchar(200)[],
@@ -31,7 +31,7 @@ WITH (
 
 CREATE TABLE IF NOT EXISTS found_spaces (
   space_id varchar(20) NOT NULL,
-  display_name varchar(50) NOT NULL,
+  display_name varchar(100) NOT NULL,
   access_state varchar(12),
   last_imported_user varchar(100),
   last_imported_date timestamp,
