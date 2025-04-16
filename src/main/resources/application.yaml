@@ -7,8 +7,8 @@ spring:
         password: ${POSTGRES_PASSWORD:admin}
     servlet:
         multipart:
-            max-file-size: 200MB
-            max-request-size: 200MB
+            max-file-size: 300MB
+            max-request-size: 300MB
     mail:
         port: # value on found_keyvalue table is used
         host: # value on found_keyvalue table is used

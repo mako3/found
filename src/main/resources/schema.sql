@@ -20,14 +20,6 @@ CREATE TABLE IF NOT EXISTS found_messages(
 
 CREATE INDEX IF NOT EXISTS found_messages_order_index ON found_messages (space_id, display_seq);
 
-CREATE INDEX IF NOT EXISTS found_messages_index ON found_messages 
-USING bm25 (message_id, space_id, message_text, created_date, creator_email)
-WITH (
-  key_field='message_id',
-  text_fields='{
-    "message_text":{"tokenizer": {"type": "japanese_lindera"}}
-  }'
-);
 
 CREATE TABLE IF NOT EXISTS found_spaces (
   space_id varchar(20) NOT NULL,
