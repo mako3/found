@@ -62,6 +62,12 @@ header {
     align-items: center;
 }
 
+@media (prefers-color-scheme: dark) {
+    header {
+        background-color: #000;
+    }
+}
+
 
 header>div:last-of-type {
     margin-left: auto;
@@ -100,7 +106,7 @@ header input {
 }
 
 tbody tr:nth-child(even) {
-    background-color: #fff;
+    background-color: #ffffff00;
 }
 
 .alert {
