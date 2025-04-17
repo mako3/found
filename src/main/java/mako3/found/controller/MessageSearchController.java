@@ -75,6 +75,7 @@ public class MessageSearchController {
             model.addAttribute("creatorEmail", creatorEmail);
             model.addAttribute("startDate", startDate);
             model.addAttribute("endDate", endDate);
+            model.addAttribute("limit", limit);
         }
 
         // show warning message when fulltext search is disabled

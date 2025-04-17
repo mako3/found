@@ -12,6 +12,7 @@
             var spaceId = document.getElementById("spaceId").value;
             var startDate = document.getElementById("start-date").value;
             var endDate = document.getElementById("end-date").value;
+            var limit = document.querySelector("input[name='q2']:checked").value;
 
             location.href = link + "?"
                 + "queryType=" + queryType + "&"
@@ -20,6 +21,7 @@
                 + "spaceId=" + spaceId + "&"
                 + "startDate=" + startDate + "&"
                 + "endDate=" + endDate + "&"
+                + "limit=" + limit + "&"
                 + "keyword=" + encodeURIComponent(keyword);
 
         }
@@ -68,7 +70,20 @@
                         (space id)<input type="text" id="spaceId" th:value="${spaceId}" size="30">
                     </label>
                 </div>
-
+            </div>
+            <div style="display:flex;">
+                <span style="padding:10px;width:200px">結果取得件数</span>
+                <div style="display:flex;align-content: flex-start;align-items: center;">
+                    <label class="radio">
+                        <input type="radio" name="q2" value="100" th:checked="${limit == null || limit == 100}" />100件
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="q2" value="200" th:checked="${limit == 200}" />200件
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="q2" value="500" th:checked="${limit == 500}" />500件
+                    </label>
+                </div>
             </div>
             <input type="button" value="検索" onclick="search();">
         </div>
@@ -98,7 +113,8 @@
                 <td><span th:text="${#temporals.format(message.createdDate, 'yyyy-MM-dd HH:mm:ss')}"></span></td>
                 <td><span th:utext="${message.messageText}"></span></td>
                 <td><span th:if="!${#lists.isEmpty(message.attachedFiles)}"
-                        th:title="${message.attachedFiles}">📁</span></td>
+                        th:title="${message.attachedFiles}">📁</span>
+                </td>
             </tr>
         </table>
     </div>
