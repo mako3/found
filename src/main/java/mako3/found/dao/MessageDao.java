@@ -94,6 +94,9 @@ public class MessageDao {
             parameters.addValue("creatorEmail", creatorEmail, Types.VARCHAR);
         }
 
+        // order by clause
+        sql += "ORDER BY created_date DESC ";
+
         // limit clause
         sql += "limit :limit";
         parameters.addValue("limit", limit, Types.INTEGER);
