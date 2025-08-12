@@ -119,17 +119,23 @@ public class MessageDao {
     }
 
     public void insert(List<ChatMessage> list) {
-        list.stream().forEach(e -> jdbcTemplate.update(
-                "insert into found_messages (space_id, creator_name, creator_email, creator_user_type, created_date, message_text, topic_id, message_id, thread_reply, has_reply, attached_files) values (?,?,?,?,?,?,?,?, false, false, ?)",
-                e.getSpaceId(),
-                e.getCreatorName(),
-                e.getCreatorEmail(),
-                e.getCreatorUserType(),
-                e.getCreatedDate(),
-                e.getMessageText(),
-                e.getTopicId(),
-                e.getMessageId(),
-                e.getAttachedFiles().toArray(new String[0])));
+        String sql = "insert into found_messages (space_id, creator_name, creator_email, creator_user_type, created_date, message_text, topic_id, message_id, thread_reply, has_reply, attached_files) values (?,?,?,?,?,?,?,?, false, false, ?)";
+        
+        List<Object[]> batchArgs = list.stream()
+                .map(e -> new Object[]{
+                        e.getSpaceId(),
+                        e.getCreatorName(),
+                        e.getCreatorEmail(),
+                        e.getCreatorUserType(),
+                        e.getCreatedDate(),
+                        e.getMessageText(),
+                        e.getTopicId(),
+                        e.getMessageId(),
+                        e.getAttachedFiles().toArray(new String[0])
+                })
+                .toList();
+        
+        jdbcTemplate.batchUpdate(sql, batchArgs);
     }
 
     public boolean checkMessageExistsBySpaceId(String spaceId) {
